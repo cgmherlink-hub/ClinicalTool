@@ -1,1 +1,185 @@
 
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>常用的臨床工具</title>
+
+<style>
+body {
+    font-family: "Noto Sans TC", Arial, sans-serif;
+    margin: 0;
+    background-color: #f5f7fa;
+    line-height: 1.6;
+}
+
+header {
+    background-color: #2c7be5;
+    color: white;
+    padding: 20px;
+    text-align: center;
+}
+
+nav {
+    background: #ffffff;
+    padding: 15px;
+    border-bottom: 1px solid #ddd;
+}
+
+nav a {
+    margin-right: 15px;
+    text-decoration: none;
+    color: #2c7be5;
+    font-weight: bold;
+}
+
+.container {
+    padding: 20px;
+}
+
+.section {
+    background: white;
+    margin-bottom: 20px;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+}
+
+h2 {
+    color: #2c7be5;
+}
+
+.highlight {
+    background: #e9f2ff;
+    padding: 10px;
+    border-left: 4px solid #2c7be5;
+    margin: 10px 0;
+}
+
+</style>
+</head>
+
+<body>
+
+<header>
+    <h1>常用的臨床工具</h1>
+    <p>診間快速查詢 × 醫學重點整理</p>
+</header>
+
+<nav>
+    <a href="#flu">流感藥物</a>
+    <a href="#ldl">LDL計算</a>
+    <a href="#cxr">胸部X光</a>
+    <a href="#axr">腹部X光</a>
+    <a href="#ct">電腦斷層</a>
+</nav>
+
+<div class="container">
+
+<!-- 流感 -->
+<div class="section" id="flu">
+    <h2>流感藥物的使用說明</h2>
+    
+    <div class="highlight">
+        適應症：症狀出現48小時內效果最佳
+    </div>
+
+    <ul>
+        <li>Oseltamivir（Tamiflu）：口服，常用</li>
+        <li>Zanamivir：吸入型，氣喘患者慎用</li>
+        <li>Peramivir：靜脈注射（重症）</li>
+        <li>Baloxavir：單次口服（新型）</li>
+    </ul>
+
+    <div class="highlight">
+        高風險族群：老人、孕婦、慢性病患者 → 建議早期使用
+    </div>
+</div>
+
+<!-- LDL -->
+<div class="section" id="ldl">
+    <h2>低密度膽固醇（LDL）計算公式</h2>
+
+    <div class="highlight">
+        Friedewald公式：
+        <br><br>
+        LDL = 總膽固醇 - HDL - (三酸甘油脂 / 5)
+    </div>
+
+    <ul>
+        <li>適用條件：TG < 400 mg/dL</li>
+        <li>禁用情況：高三酸甘油脂、空腹不完全</li>
+    </ul>
+
+    <div class="highlight">
+        臨床目標：
+        <br>
+        高風險患者：LDL < 70 mg/dL
+    </div>
+</div>
+
+<!-- 胸部X光 -->
+<div class="section" id="cxr">
+    <h2>胸部X光判讀方法（CXR）</h2>
+
+    <div class="highlight">
+        ABCDE原則
+    </div>
+
+    <ul>
+        <li>A：Airway（氣管）</li>
+        <li>B：Breathing（肺野）</li>
+        <li>C：Cardiac（心臟大小）</li>
+        <li>D：Diaphragm（橫膈）</li>
+        <li>E：Everything else（骨骼、軟組織）</li>
+    </ul>
+
+    <div class="highlight">
+        常見異常：肺炎、氣胸、心臟擴大
+    </div>
+</div>
+
+<!-- 腹部X光 -->
+<div class="section" id="axr">
+    <h2>腹部X光判讀方法（AXR）</h2>
+
+    <div class="highlight">
+        判讀三重點：Gas、Mass、Calcification
+    </div>
+
+    <ul>
+        <li>腸氣分布：是否腸阻塞</li>
+        <li>異常鈣化：結石</li>
+        <li>器官腫大：肝脾腫大</li>
+    </ul>
+
+    <div class="highlight">
+        典型表現：Step ladder sign（小腸阻塞）
+    </div>
+</div>
+
+<!-- CT -->
+<div class="section" id="ct">
+    <h2>電腦斷層（CT）判讀方法</h2>
+
+    <div class="highlight">
+        判讀順序：Window → Density → Enhancement
+    </div>
+
+    <ul>
+        <li>Window設定：lung / soft tissue / bone</li>
+        <li>Density：高密度 vs 低密度</li>
+        <li>對比增強：是否有腫瘤或發炎</li>
+    </ul>
+
+    <div class="highlight">
+        臨床技巧：
+        同一切面「左右比較」最重要
+    </div>
+</div>
+
+</div>
+
+</body>
+</html>
