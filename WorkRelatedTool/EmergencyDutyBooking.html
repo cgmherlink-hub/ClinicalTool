@@ -1,1 +1,619 @@
 
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>醫師月排班預約產生器</title>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:'Segoe UI',sans-serif; background:#f0f4f8; color:#1a202c; }
+header { background:linear-gradient(135deg,#0d9488,#0f766e); color:white; padding:1.3rem 2rem; text-align:center; }
+header h1 { font-size:1.3rem; font-weight:700; }
+header p { font-size:0.8rem; opacity:0.85; margin-top:0.25rem; }
+.main { max-width:900px; margin:0 auto; padding:1.3rem 1rem 4rem; }
+
+/* MONTH SELECTOR */
+.month-bar { background:white; border-radius:12px; padding:1.1rem 1.4rem; margin-bottom:1rem; box-shadow:0 2px 8px rgba(0,0,0,0.07); }
+.month-bar-top { display:flex; align-items:center; gap:1rem; flex-wrap:wrap; margin-bottom:0; }
+.month-bar-top label { font-weight:700; color:#0d9488; font-size:0.92rem; white-space:nowrap; }
+.month-btns { display:flex; gap:0.6rem; }
+.month-btn { padding:0.4rem 1rem; border-radius:999px; border:2px solid #0d9488; background:white; color:#0d9488; font-weight:600; font-size:0.85rem; cursor:pointer; transition:all 0.15s; }
+.month-btn.active { background:#0d9488; color:white; }
+
+/* CALENDAR */
+.cal-wrap { margin-top:1rem; display:none; }
+.cal-wrap.show { display:block; }
+.cal-grid { display:grid; grid-template-columns:repeat(7,1fr); gap:3px; }
+.cal-head { text-align:center; font-size:0.72rem; font-weight:700; color:#718096; padding:0.3rem 0; }
+.cal-head.sun-h { color:#e53e3e; }
+.cal-head.sat-h { color:#3182ce; }
+.cal-day {
+  aspect-ratio:1; display:flex; flex-direction:column; align-items:center; justify-content:center;
+  border-radius:8px; font-size:0.78rem; font-weight:600; cursor:pointer;
+  border:2px solid transparent; transition:all 0.12s; position:relative; padding:2px;
+  background:#f7fafc; color:#4a5568;
+}
+.cal-day:hover { border-color:#0d9488; color:#0d9488; }
+.cal-day.empty { background:transparent; cursor:default; pointer-events:none; }
+.cal-day.today { border-color:#f97316; }
+.cal-day .day-num { font-size:0.82rem; line-height:1; }
+.cal-day .day-dots { display:flex; gap:2px; margin-top:2px; flex-wrap:wrap; justify-content:center; }
+.dot { width:5px; height:5px; border-radius:50%; }
+.dot-mon { background:#0d9488; }
+.dot-thu { background:#805ad5; }
+.dot-wed { background:#f97316; }
+.dot-tue { background:#3182ce; }
+.dot-sun { background:#e53e3e; }
+.dot-acls { background:#38a169; }
+.dot-dental { background:#d69e2e; }
+.dot-eye { background:#dd6b20; }
+.dot-lecture { background:#9f7aea; }
+.cal-day.has-sel { background:#e6fffa; }
+.cal-legend { display:flex; flex-wrap:wrap; gap:0.5rem; margin-top:0.6rem; }
+.leg { display:flex; align-items:center; gap:0.25rem; font-size:0.72rem; color:#718096; }
+
+/* CARD */
+.card { background:white; border-radius:12px; padding:1.1rem 1.3rem; margin-bottom:0.9rem; box-shadow:0 2px 8px rgba(0,0,0,0.07); }
+.card-title { font-weight:700; font-size:0.93rem; color:#0d9488; margin-bottom:0.12rem; }
+.card-sub { font-size:0.75rem; color:#718096; margin-bottom:0.65rem; }
+
+/* ACTION ROW */
+.action-row { display:flex; align-items:center; gap:0.45rem; margin-bottom:0.6rem; flex-wrap:wrap; }
+.ac { padding:0.26rem 0.8rem; border-radius:999px; font-size:0.74rem; font-weight:700; cursor:pointer; border:2px solid; transition:all 0.15s; }
+.ac-skip { border-color:#f97316; color:#f97316; background:white; }
+.ac-skip.active { background:#f97316; color:white; }
+.ac-all { border-color:#3182ce; color:#3182ce; background:white; }
+.ac-all.active { background:#3182ce; color:white; }
+.ac-rest { border-color:#805ad5; color:#805ad5; background:white; }
+.ac-rest.active { background:#805ad5; color:white; }
+.ac-info { font-size:0.71rem; color:#a0aec0; }
+
+/* CHIPS */
+.chips { display:flex; flex-wrap:wrap; gap:0.4rem; }
+.chip { padding:0.3rem 0.75rem; border-radius:999px; border:2px solid #e2e8f0; background:#f7fafc; color:#4a5568; font-size:0.79rem; font-weight:600; cursor:pointer; transition:all 0.15s; user-select:none; }
+.chip:hover { border-color:#0d9488; color:#0d9488; }
+.chip.selected { background:#0d9488; border-color:#0d9488; color:white; }
+.chip.disabled { opacity:0.35; pointer-events:none; }
+.chip.bad { background:#fff5f5; border-color:#fc8181; color:#c53030; }
+
+/* OTHER */
+.other-grid { display:grid; gap:0.75rem; }
+.other-item { border:2px solid #e2e8f0; border-radius:10px; padding:0.85rem 1rem; transition:border 0.15s; }
+.other-item.active-item { border-color:#0d9488; background:#f0fdf9; }
+.other-header { display:flex; align-items:center; gap:0.55rem; }
+.other-header input[type=checkbox] { width:16px; height:16px; accent-color:#0d9488; cursor:pointer; }
+.other-header label { font-weight:700; font-size:0.88rem; color:#2d3748; cursor:pointer; flex:1; }
+.other-body { margin-top:0.7rem; display:none; }
+.other-body.show { display:block; }
+.reason-row { display:flex; align-items:center; gap:0.55rem; margin-top:0.55rem; }
+.reason-row label { font-size:0.77rem; color:#718096; white-space:nowrap; min-width:70px; }
+input[type=text], textarea { border:2px solid #e2e8f0; border-radius:8px; padding:0.36rem 0.65rem; font-size:0.84rem; color:#2d3748; outline:none; transition:border 0.15s; width:100%; }
+input[type=text]:focus, textarea:focus { border-color:#0d9488; }
+textarea { resize:vertical; min-height:60px; }
+
+/* ACLS bad label */
+.bad-label { font-size:0.75rem; color:#e53e3e; font-weight:700; margin:0.6rem 0 0.4rem; }
+
+.gen-btn { width:100%; padding:0.9rem; background:linear-gradient(135deg,#f97316,#ea580c); color:white; border:none; border-radius:12px; font-size:0.98rem; font-weight:700; cursor:pointer; margin-top:0.4rem; transition:opacity 0.2s,transform 0.15s; }
+.gen-btn:hover { opacity:0.91; transform:translateY(-1px); }
+.reset-btn { width:100%; padding:0.6rem; background:white; color:#718096; border:2px solid #e2e8f0; border-radius:12px; font-size:0.86rem; font-weight:600; cursor:pointer; margin-top:0.5rem; }
+
+.output-box { background:#1a202c; border-radius:12px; padding:1.3rem 1.4rem; margin-top:1.1rem; position:relative; }
+.output-box pre { color:#e2e8f0; font-family:'Courier New',monospace; font-size:0.85rem; line-height:1.85; white-space:pre-wrap; word-break:break-all; }
+.copy-btn { position:absolute; top:0.7rem; right:0.7rem; padding:0.3rem 0.8rem; background:#0d9488; color:white; border:none; border-radius:6px; font-size:0.75rem; font-weight:700; cursor:pointer; }
+</style>
+</head>
+<body>
+<header>
+  <h1>🩺 醫師月排班預約產生器</h1>
+  <p>選月份 → 勾選日期 → 一鍵產生信件</p>
+</header>
+<div class="main">
+
+  <!-- 月份 + 月曆 -->
+  <div class="month-bar">
+    <div class="month-bar-top">
+      <label>📅 預約月份：</label>
+      <div class="month-btns" id="monthBtns"></div>
+      <button class="month-btn" id="otherMonthBtn" onclick="toggleOtherMonthPicker()" style="border-color:#805ad5;color:#805ad5;">＋ 其他月份</button>
+    </div>
+    <!-- 其他月份選擇器 -->
+    <div id="otherMonthPicker" style="display:none;margin-top:1rem;">
+      <div style="display:flex;align-items:center;gap:0.8rem;flex-wrap:wrap;">
+        <div style="display:flex;align-items:center;gap:0.4rem;">
+          <select id="otherYear" style="border:2px solid #805ad5;border-radius:8px;padding:0.35rem 0.5rem;font-size:0.85rem;color:#2d3748;outline:none;background:white;">
+          </select>
+          <span style="font-size:0.85rem;color:#4a5568;font-weight:600;">年</span>
+          <select id="otherMonth" style="border:2px solid #805ad5;border-radius:8px;padding:0.35rem 0.5rem;font-size:0.85rem;color:#2d3748;outline:none;background:white;">
+            <option value="0">01</option><option value="1">02</option><option value="2">03</option>
+            <option value="3">04</option><option value="4">05</option><option value="5">06</option>
+            <option value="6">07</option><option value="7">08</option><option value="8">09</option>
+            <option value="9">10</option><option value="10">11</option><option value="11">12</option>
+          </select>
+          <span style="font-size:0.85rem;color:#4a5568;font-weight:600;">月</span>
+        </div>
+        <button class="month-btn" onclick="applyOtherMonth()" style="border-color:#805ad5;background:#805ad5;color:white;">確定選擇</button>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- 週一上午 -->
+  <div class="card">
+    <div class="card-title">🏫 週一上午 — 體育大學上課</div>
+    <div class="card-sub">選擇要上課的週一日期</div>
+    <div class="action-row">
+      <div class="ac ac-skip" id="ac-monMorn-skip" onclick="acToggle('monMorn','skip')">全部跳過</div>
+      <div class="ac ac-all" id="ac-monMorn-all" onclick="acToggle('monMorn','all')">全部選擇</div>
+    </div>
+    <div class="chips" id="chips-monMorn"></div>
+  </div>
+
+  <!-- 週一下午 -->
+  <div class="card">
+    <div class="card-title">🏥 週一下午 — 桃園長庚看診</div>
+    <div class="card-sub">選擇要看診的週一日期</div>
+    <div class="action-row">
+      <div class="ac ac-skip" id="ac-monAfter-skip" onclick="acToggle('monAfter','skip')">全部跳過</div>
+      <div class="ac ac-all" id="ac-monAfter-all" onclick="acToggle('monAfter','all')">全部選擇</div>
+    </div>
+    <div class="chips" id="chips-monAfter"></div>
+  </div>
+
+  <!-- 週四 -->
+  <div class="card">
+    <div class="card-title">🔬 週四下午 — 桃園長庚健診</div>
+    <div class="card-sub">選擇要健診的週四日期</div>
+    <div class="action-row">
+      <div class="ac ac-skip" id="ac-thu-skip" onclick="acToggle('thu','skip')">全部跳過</div>
+      <div class="ac ac-all" id="ac-thu-all" onclick="acToggle('thu','all')">全部選擇</div>
+    </div>
+    <div class="chips" id="chips-thu"></div>
+  </div>
+
+  <!-- 台達電 週三 -->
+  <div class="card">
+    <div class="card-title">⚡ 台達電駐診（每月最多 3 個下午）</div>
+    <div class="card-sub">選擇要駐診的週三日期（最多 3 個）</div>
+    <div class="action-row">
+      <div class="ac ac-skip" id="ac-wed-skip" onclick="acToggle('wed','skip')">全部跳過</div>
+      <div class="ac ac-all" id="ac-wed-all" onclick="acToggle('wed','all3')">前3全選</div>
+      <span class="ac-info" id="wedCount">已選 0 / 3</span>
+    </div>
+    <div class="chips" id="chips-wed"></div>
+  </div>
+
+  <!-- 週日 -->
+  <div class="card">
+    <div class="card-title">☀️ 週日出勤安排</div>
+    <div class="card-sub">預設全部休假，可選擇例外上班的週日</div>
+    <div class="action-row">
+      <div class="ac ac-rest active" id="ac-sun-rest" onclick="acToggle('sun','rest')">全部休假</div>
+      <div class="ac ac-all" id="ac-sun-all" onclick="acToggle('sun','all')">全部上班</div>
+      <div class="ac ac-skip" id="ac-sun-skip" onclick="acToggle('sun','skip')">全部跳過</div>
+    </div>
+    <div class="chips" id="chips-sun"></div>
+  </div>
+
+  <!-- 長庚大學 週二 -->
+  <div class="card">
+    <div class="card-title">📚 長庚大學社區醫學上課</div>
+    <div class="card-sub">選擇要上課的週二日期</div>
+    <div class="action-row">
+      <div class="ac ac-skip" id="ac-tue-skip" onclick="acToggle('tue','skip')">全部跳過</div>
+      <div class="ac ac-all" id="ac-tue-all" onclick="acToggle('tue','all')">全部選擇</div>
+    </div>
+    <div class="chips" id="chips-tue"></div>
+  </div>
+
+  <!-- ACLS -->
+  <div class="card">
+    <div class="card-title">🚑 預約 ACLS 上課</div>
+    <div class="card-sub">點選「適合」安排 ACLS 的日期</div>
+    <div class="action-row">
+      <div class="ac ac-skip" id="ac-acls-skip" onclick="acToggle('acls','skip')">全部跳過</div>
+      <div class="ac ac-all" id="ac-acls-all" onclick="acToggle('acls','all')">全部適合</div>
+    </div>
+    <div class="chips" id="chips-acls"></div>
+  </div>
+
+  <!-- 其他 -->
+  <div class="card">
+    <div class="card-title">📝 其他特殊安排</div>
+    <div class="card-sub">勾選後選日期與填理由</div>
+    <div class="other-grid">
+      <div class="other-item" id="item-dental">
+        <div class="other-header">
+          <input type="checkbox" id="chk-dental" onchange="toggleOther('dental')">
+          <label for="chk-dental">🦷 看牙科</label>
+        </div>
+        <div class="other-body" id="body-dental">
+          <div class="chips" id="chips-dental"></div>
+          <div class="reason-row"><label>理由：</label><input type="text" id="reason-dental" placeholder="例：定期洗牙、蛀牙治療…"></div>
+        </div>
+      </div>
+      <div class="other-item" id="item-eye">
+        <div class="other-header">
+          <input type="checkbox" id="chk-eye" onchange="toggleOther('eye')">
+          <label for="chk-eye">👁️ 看眼科</label>
+        </div>
+        <div class="other-body" id="body-eye">
+          <div class="chips" id="chips-eye"></div>
+          <div class="reason-row"><label>理由：</label><input type="text" id="reason-eye" placeholder="例：視力檢查、配眼鏡…"></div>
+        </div>
+      </div>
+      <div class="other-item" id="item-lecture">
+        <div class="other-header">
+          <input type="checkbox" id="chk-lecture" onchange="toggleOther('lecture')">
+          <label for="chk-lecture">🎤 演講</label>
+        </div>
+        <div class="other-body" id="body-lecture">
+          <div class="chips" id="chips-lecture"></div>
+          <div class="reason-row"><label>主題／地點：</label><input type="text" id="reason-lecture" placeholder="例：某大學邀請演講…"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 備註 -->
+  <div class="card">
+    <div class="card-title">💬 備註</div>
+    <textarea id="extraNote" placeholder="其他補充事項…"></textarea>
+  </div>
+
+  <button class="gen-btn" onclick="generate()">📄 產生預約信件</button>
+  <button class="reset-btn" onclick="resetAll()">↺ 重置全部</button>
+
+  <div id="output" style="display:none">
+    <div class="output-box">
+      <button class="copy-btn" onclick="copyText()">複製</button>
+      <pre id="outputText"></pre>
+    </div>
+  </div>
+</div>
+
+<script>
+const TODAY = new Date(2026, 4, 30);
+const WD_LABEL = ['日','一','二','三','四','五','六'];
+const WD_MAP = { monMorn:1, monAfter:1, thu:4, wed:3, sun:0, tue:2 };
+
+const S = {
+  month: null,
+  monMorn: new Set(), monAfter: new Set(),
+  thu: new Set(), wed: new Set(), sun: new Set(), tue: new Set(),
+  acls: new Set(),
+  dental: new Set(), eye: new Set(), lecture: new Set(),
+  mode: { monMorn:'', monAfter:'', thu:'', wed:'', sun:'rest', tue:'', acls:'' }
+};
+
+function fmt(d) { return `${d.getMonth()+1}/${d.getDate()}（${WD_LABEL[d.getDay()]}）`; }
+function fmtShort(d) { return `${d.getMonth()+1}/${d.getDate()}`; }
+
+function getDates(y, m, wd) {
+  const res=[], d=new Date(y,m,1);
+  while(d.getMonth()===m){ if(d.getDay()===wd) res.push(new Date(d)); d.setDate(d.getDate()+1); }
+  return res;
+}
+function getAllDates(y, m) {
+  const res=[], d=new Date(y,m,1);
+  while(d.getMonth()===m){ res.push(new Date(d)); d.setDate(d.getDate()+1); }
+  return res;
+}
+
+// ── MONTH BUTTONS ──
+function renderMonths() {
+  const c = document.getElementById('monthBtns');
+  c.innerHTML = '';
+  [1,2].forEach(off => {
+    const mo = new Date(TODAY.getFullYear(), TODAY.getMonth()+off, 1);
+    const b = document.createElement('button');
+    b.className = 'month-btn';
+    b.textContent = `${mo.getFullYear()}年${String(mo.getMonth()+1).padStart(2,'0')}月`;
+    b.onclick = () => selectMonth(mo, b);
+    c.appendChild(b);
+  });
+  // populate year selector
+  const ySel = document.getElementById('otherYear');
+  if(ySel && !ySel.options.length) {
+    for(let y=TODAY.getFullYear(); y<=TODAY.getFullYear()+2; y++){
+      const opt=document.createElement('option'); opt.value=y; opt.textContent=y; ySel.appendChild(opt);
+    }
+  }
+  // default otherMonth to next month
+  const defM = new Date(TODAY.getFullYear(), TODAY.getMonth()+1, 1);
+  document.getElementById('otherMonth').value = defM.getMonth();
+}
+
+function toggleOtherMonthPicker() {
+  const p = document.getElementById('otherMonthPicker');
+  const btn = document.getElementById('otherMonthBtn');
+  const show = p.style.display === 'none';
+  p.style.display = show ? 'block' : 'none';
+  btn.style.background = show ? '#805ad5' : 'white';
+  btn.style.color = show ? 'white' : '#805ad5';
+}
+
+function applyOtherMonth() {
+  const y = parseInt(document.getElementById('otherYear').value);
+  const m = parseInt(document.getElementById('otherMonth').value);
+  const mo = new Date(y, m, 1);
+  // deactivate quick buttons
+  document.querySelectorAll('.month-btn:not(#otherMonthBtn)').forEach(b => b.classList.remove('active'));
+  document.getElementById('otherMonthBtn').style.background = '#805ad5';
+  document.getElementById('otherMonthBtn').style.color = 'white';
+  document.getElementById('otherMonthBtn').textContent = `✓ ${y}年${String(m+1).padStart(2,'0')}月`;
+  document.getElementById('otherMonthPicker').style.display = 'none';
+  selectMonth(mo, { classList: { add:()=>{}, remove:()=>{}, toggle:()=>{} } });
+}
+
+function selectMonth(mo, btn) {
+  S.month = mo;
+  document.querySelectorAll('.month-btn:not(#otherMonthBtn)').forEach(b => b.classList.remove('active'));
+  // reset otherMonthBtn if a quick btn was clicked
+  const ob = document.getElementById('otherMonthBtn');
+  if(btn !== ob && btn.classList) {
+    btn.classList.add('active');
+    ob.style.background='white'; ob.style.color='#805ad5'; ob.textContent='＋ 其他月份';
+    document.getElementById('otherMonthPicker').style.display='none';
+  }
+  // reset
+  ['monMorn','monAfter','thu','wed','sun','tue','acls','dental','eye','lecture'].forEach(k => S[k] && S[k].clear());
+  S.mode = { monMorn:'', monAfter:'', thu:'', wed:'', sun:'rest', tue:'', acls:'' };
+  // render all
+  ['monMorn','monAfter','thu','wed','sun','tue'].forEach(k => renderChips(k));
+  renderAclsChips();
+  ['dental','eye','lecture'].forEach(k => { if(document.getElementById('chk-'+k).checked) renderOtherChips(k); });
+  updateWedCount();
+  renderCalendar();
+  // reset sun btn
+  document.querySelectorAll('[id^="ac-sun-"]').forEach(e => e.classList.remove('active'));
+  document.getElementById('ac-sun-rest').classList.add('active');
+}
+
+// ── CALENDAR ──
+function renderCalendar() {
+  if(!S.month) return;
+  const y = S.month.getFullYear(), m = S.month.getMonth();
+  const grid = document.getElementById('calGrid');
+  grid.innerHTML = '';
+  const heads = ['日','一','二','三','四','五','六'];
+  heads.forEach((h,i) => {
+    const el = document.createElement('div');
+    el.className = 'cal-head' + (i===0?' sun-h':i===6?' sat-h':'');
+    el.textContent = h; grid.appendChild(el);
+  });
+  const first = new Date(y,m,1).getDay();
+  for(let i=0;i<first;i++){
+    const el=document.createElement('div'); el.className='cal-day empty'; grid.appendChild(el);
+  }
+  const days = new Date(y,m+1,0).getDate();
+  for(let day=1;day<=days;day++){
+    const d = new Date(y,m,day);
+    const el = document.createElement('div');
+    el.className = 'cal-day';
+    if(d.toDateString()===TODAY.toDateString()) el.classList.add('today');
+    const numEl = document.createElement('div');
+    numEl.className = 'day-num';
+    numEl.textContent = day;
+    el.appendChild(numEl);
+    const dotsEl = document.createElement('div');
+    dotsEl.className = 'day-dots';
+    dotsEl.id = `dots-${day}`;
+    el.appendChild(dotsEl);
+    el.onclick = () => calDayClick(d);
+    grid.appendChild(el);
+  }
+  refreshCalDots();
+}
+
+function refreshCalDots() {
+  if(!S.month) return;
+  const y=S.month.getFullYear(), m=S.month.getMonth();
+  const days=new Date(y,m+1,0).getDate();
+  for(let day=1;day<=days;day++){
+    const dotsEl=document.getElementById(`dots-${day}`);
+    if(!dotsEl) continue;
+    dotsEl.innerHTML='';
+    const d=new Date(y,m,day), wd=d.getDay();
+    // monMorn & monAfter → dot-mon
+    if(wd===1 && (S.monMorn.has(day)||S.monAfter.has(day))) addDot(dotsEl,'dot-mon');
+    if(wd===4 && S.thu.has(day)) addDot(dotsEl,'dot-thu');
+    if(wd===3 && S.wed.has(day)) addDot(dotsEl,'dot-wed');
+    if(wd===2 && S.tue.has(day)) addDot(dotsEl,'dot-tue');
+    if(wd===0 && S.sun.has(day) && S.mode.sun!=='rest') addDot(dotsEl,'dot-sun');
+    if(S.acls.has(day)) addDot(dotsEl,'dot-acls');
+    if(document.getElementById('chk-dental').checked && S.dental.has(day)) addDot(dotsEl,'dot-dental');
+    if(document.getElementById('chk-eye').checked && S.eye.has(day)) addDot(dotsEl,'dot-eye');
+    if(document.getElementById('chk-lecture').checked && S.lecture.has(day)) addDot(dotsEl,'dot-lecture');
+    // highlight cell
+    const cell=dotsEl.closest('.cal-day');
+    cell.classList.toggle('has-sel', dotsEl.children.length>0);
+  }
+}
+function addDot(parent, cls) {
+  const d=document.createElement('div'); d.className='dot '+cls; parent.appendChild(d);
+}
+
+// clicking a calendar day: toggle the most relevant set
+function calDayClick(d) {
+  const wd=d.getDay(), day=d.getDate();
+  // priority: monMorn, monAfter, thu, wed, tue, sun, acls
+  if(wd===1){
+    // toggle monMorn; if already, toggle monAfter
+    if(!S.monMorn.has(day)){ S.monMorn.has(day)?S.monMorn.delete(day):S.monMorn.add(day); }
+    else { S.monAfter.has(day)?S.monAfter.delete(day):S.monAfter.add(day); }
+    // simpler: just toggle both
+    S.monMorn.has(day)?S.monMorn.delete(day):S.monMorn.add(day);
+    S.mode.monMorn=''; renderChips('monMorn');
+    S.mode.monAfter=''; renderChips('monAfter');
+  } else if(wd===4){ S.thu.has(day)?S.thu.delete(day):S.thu.add(day); S.mode.thu=''; renderChips('thu'); }
+  else if(wd===3){ if(S.wed.has(day)||S.wed.size<3){ S.wed.has(day)?S.wed.delete(day):S.wed.add(day); } S.mode.wed=''; renderChips('wed'); updateWedCount(); }
+  else if(wd===2){ S.tue.has(day)?S.tue.delete(day):S.tue.add(day); S.mode.tue=''; renderChips('tue'); }
+  else if(wd===0){ S.sun.has(day)?S.sun.delete(day):S.sun.add(day); S.mode.sun=''; renderChips('sun'); }
+  refreshCalDots();
+}
+
+// ── CHIPS ──
+function renderChips(key) {
+  if(!S.month) return;
+  const el=document.getElementById('chips-'+key); if(!el) return;
+  const wd=WD_MAP[key];
+  const dates=getDates(S.month.getFullYear(),S.month.getMonth(),wd);
+  const isSkip=S.mode[key]==='skip';
+  el.innerHTML='';
+  dates.forEach(d=>{
+    const chip=document.createElement('div');
+    chip.className='chip'+(S[key].has(d.getDate())?' selected':'')+(isSkip?' disabled':'');
+    chip.textContent=fmt(d);
+    chip.onclick=()=>{ if(!isSkip){ S[key].has(d.getDate())?S[key].delete(d.getDate()):S[key].add(d.getDate()); if(key==='wed')updateWedCount(); S.mode[key]=''; renderChips(key); refreshCalDots(); } };
+    el.appendChild(chip);
+  });
+  updateAcBtns(key);
+}
+
+function renderAclsChips() {
+  if(!S.month) return;
+  const el=document.getElementById('chips-acls'); if(!el) return;
+  const dates=getAllDates(S.month.getFullYear(),S.month.getMonth());
+  const isSkip=S.mode['acls']==='skip';
+  el.innerHTML='';
+  dates.forEach(d=>{
+    const chip=document.createElement('div');
+    chip.className='chip'+(S.acls.has(d.getDate())?' selected':'')+(isSkip?' disabled':'');
+    chip.textContent=fmt(d);
+    chip.onclick=()=>{ if(!isSkip){ S.acls.has(d.getDate())?S.acls.delete(d.getDate()):S.acls.add(d.getDate()); S.mode.acls=''; renderAclsChips(); refreshCalDots(); } };
+    el.appendChild(chip);
+  });
+  updateAcBtns('acls');
+}
+
+function renderOtherChips(key) {
+  if(!S.month) return;
+  const el=document.getElementById('chips-'+key); if(!el) return;
+  const dates=getAllDates(S.month.getFullYear(),S.month.getMonth());
+  el.innerHTML='';
+  dates.forEach(d=>{
+    const chip=document.createElement('div');
+    chip.className='chip'+(S[key].has(d.getDate())?' selected':'');
+    chip.textContent=fmt(d);
+    chip.onclick=()=>{ S[key].has(d.getDate())?S[key].delete(d.getDate()):S[key].add(d.getDate()); renderOtherChips(key); refreshCalDots(); };
+    el.appendChild(chip);
+  });
+}
+
+function acToggle(key, mode) {
+  if(!S.month) return;
+  S.mode[key]=mode; S[key] && S[key].clear();
+  if(mode==='all'){
+    const src = (key in WD_MAP) ? getDates(S.month.getFullYear(),S.month.getMonth(),WD_MAP[key]) : getAllDates(S.month.getFullYear(),S.month.getMonth());
+    src.forEach(d=>S[key].add(d.getDate()));
+  } else if(mode==='all3'){
+    getDates(S.month.getFullYear(),S.month.getMonth(),3).slice(0,3).forEach(d=>S.wed.add(d.getDate()));
+    updateWedCount();
+  } else if(mode==='rest'){ /* clear = all休假 */ }
+  if(key==='acls') renderAclsChips();
+  else renderChips(key);
+  refreshCalDots();
+  // update sun buttons
+  document.querySelectorAll(`[id^="ac-${key}-"]`).forEach(e=>e.classList.remove('active'));
+  document.getElementById(`ac-${key}-${mode}`) && document.getElementById(`ac-${key}-${mode}`).classList.add('active');
+}
+
+function updateAcBtns(key) {
+  ['skip','all','rest','all3'].forEach(m=>{
+    const el=document.getElementById(`ac-${key}-${m}`);
+    if(el) el.classList.toggle('active', S.mode[key]===m);
+  });
+}
+
+function updateWedCount() { document.getElementById('wedCount').textContent=`已選 ${S.wed.size} / 3`; }
+
+function toggleOther(key) {
+  const chk=document.getElementById('chk-'+key);
+  document.getElementById('body-'+key).classList.toggle('show',chk.checked);
+  document.getElementById('item-'+key).classList.toggle('active-item',chk.checked);
+  if(chk.checked && S.month) renderOtherChips(key);
+  else { S[key].clear(); refreshCalDots(); }
+}
+
+// ── GENERATE ──
+function generate() {
+  if(!S.month){alert('請先選擇月份！');return;}
+  const y=S.month.getFullYear(), m=S.month.getMonth(), mn=String(m+1).padStart(2,'0');
+  const lines=[];
+
+  function addByKey(key,time,label){
+    if(S.mode[key]==='skip') return;
+    getDates(y,m,WD_MAP[key]).filter(d=>S[key].has(d.getDate())).forEach(d=>lines.push({d,text:`${fmt(d)} ${time}，${label}`}));
+  }
+  addByKey('monMorn','上午','體育大學上課');
+  addByKey('monAfter','下午','桃園長庚看診');
+  addByKey('thu','下午','桃園長庚健診');
+  addByKey('wed','下午','台達電駐診');
+  addByKey('tue','上午','長庚大學社區醫學上課');
+  if(S.mode.sun!=='skip'&&S.mode.sun!=='rest') getDates(y,m,0).filter(d=>S.sun.has(d.getDate())).forEach(d=>lines.push({d,text:`${fmt(d)} 例外上班`}));
+  lines.sort((a,b)=>a.d-b.d);
+
+  // ACLS
+  let aclsLine='';
+  if(S.mode.acls!=='skip'&&S.acls.size>0){
+    const dates=getAllDates(y,m).filter(d=>S.acls.has(d.getDate())).map(d=>fmtShort(d)).join('、');
+    aclsLine=`\nACLS 上課：適合日期 ${dates}`;
+  }
+
+  function otherLine(key,label){
+    const chk=document.getElementById('chk-'+key);
+    if(!chk||!chk.checked||S[key].size===0) return '';
+    const dates=getAllDates(y,m).filter(d=>S[key].has(d.getDate())).map(d=>fmt(d)).join('、');
+    const reason=document.getElementById('reason-'+key)?.value.trim();
+    return `\n${label}：${dates}${reason?'（'+reason+'）':''}`;
+  }
+
+  const extra=document.getElementById('extraNote').value.trim();
+  const todayStr=`${TODAY.getFullYear()}年${String(TODAY.getMonth()+1).padStart(2,'0')}月${String(TODAY.getDate()).padStart(2,'0')}日`;
+
+  let out=`DEAR 專人、林灯賦主任、楊坤儒主任、管仁澤主任、羅祥雲主任、黃奕瑜主任\n`;
+  out+=`陳進明醫師預約 ${y}年${mn}月\n\n`;
+  lines.forEach(l=>out+=`- ${l.text}\n`);
+  if(aclsLine) out+=aclsLine+'\n';
+  out+=otherLine('dental','牙科');
+  out+=otherLine('eye','眼科');
+  out+=otherLine('lecture','演講');
+  if(extra) out+=`\n備註：${extra}`;
+  out+=`\n\n祝健康愉快\n${todayStr}`;
+
+  document.getElementById('outputText').textContent=out;
+  document.getElementById('output').style.display='block';
+  document.getElementById('output').scrollIntoView({behavior:'smooth'});
+}
+
+function copyText(){
+  navigator.clipboard.writeText(document.getElementById('outputText').textContent).then(()=>{
+    const b=document.querySelector('.copy-btn'); b.textContent='已複製！';
+    setTimeout(()=>b.textContent='複製',1800);
+  });
+}
+
+function resetAll(){
+  S.month=null;
+  ['monMorn','monAfter','thu','wed','sun','tue','acls','dental','eye','lecture'].forEach(k=>S[k]&&S[k].clear());
+  S.mode={monMorn:'',monAfter:'',thu:'',wed:'',sun:'rest',tue:'',acls:''};
+  document.querySelectorAll('.month-btn').forEach(b=>b.classList.remove('active'));
+  ['monMorn','monAfter','thu','wed','sun','tue','acls'].forEach(k=>{const e=document.getElementById('chips-'+k);if(e)e.innerHTML='';});
+  ['dental','eye','lecture'].forEach(k=>{
+    document.getElementById('chk-'+k).checked=false;
+    document.getElementById('body-'+k).classList.remove('show');
+    document.getElementById('item-'+k).classList.remove('active-item');
+    const e=document.getElementById('chips-'+k); if(e) e.innerHTML='';
+    const r=document.getElementById('reason-'+k); if(r) r.value='';
+  });
+  document.getElementById('extraNote').value='';
+  document.getElementById('output').style.display='none';
+  updateWedCount();
+}
+
+renderMonths();
+</script>
+</body>
+</html>
