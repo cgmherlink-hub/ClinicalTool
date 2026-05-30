@@ -58,6 +58,51 @@ h2 {
     border-left: 4px solid #2c7be5;
     margin: 10px 0;
 }
+
+/* New card styles */
+.section.card-emergency {
+    border-left: 5px solid #e85d04;
+}
+.section.card-emergency h2 {
+    color: #e85d04;
+}
+.section.card-emergency .highlight {
+    background: #fff3e0;
+    border-left-color: #e85d04;
+}
+
+.section.card-factory {
+    border-left: 5px solid #1b9e75;
+}
+.section.card-factory h2 {
+    color: #1b9e75;
+}
+.section.card-factory .highlight {
+    background: #e1f5ee;
+    border-left-color: #1b9e75;
+}
+
+.card-link-btn {
+    display: inline-block;
+    margin-top: 12px;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-weight: bold;
+    font-size: 15px;
+    text-decoration: none;
+    transition: opacity 0.2s;
+}
+.card-link-btn:hover {
+    opacity: 0.85;
+}
+.btn-emergency {
+    background-color: #e85d04;
+    color: white;
+}
+.btn-factory {
+    background-color: #1b9e75;
+    color: white;
+}
 </style>
 </head>
 <body>
@@ -73,6 +118,8 @@ h2 {
     <a href="#ct">電腦斷層</a>
     <a href="#labor-pain">產程疼痛</a>
     <a href="#pregnancy-pain">孕期疼痛</a>
+    <a href="#emergency-booking">急診班預約</a>
+    <a href="#factory-report">廠區報備系統</a>
 </nav>
 <div class="container">
 
@@ -199,10 +246,38 @@ h2 {
     </div>
 </div>
 
-<!-- 廠區駐診報備 -->
-<div class="section" id="report">
-    <h2>廠區駐診報備</h2>
-    <a href="https://cgmherlink-hub.github.io/ReportData/" class="nav-link">🏠 <span>廠區報備系統</span></a>
+<!-- 急診班的預約（新增） -->
+<div class="section card-emergency" id="emergency-booking">
+    <h2>🚑 急診班的預約</h2>
+    <div class="highlight">
+        線上預約急診班次，快速確認排班與出勤時間
+    </div>
+    <ul>
+        <li>查詢可預約班次與時段</li>
+        <li>線上送出預約申請</li>
+        <li>確認排班狀態與通知</li>
+    </ul>
+    <div class="highlight">
+        注意事項：請於班次開始前完成預約，逾時恕不受理
+    </div>
+    <a href="./EmergencyBooking/index.html" class="card-link-btn btn-emergency">前往急診班預約</a>
+</div>
+
+<!-- 廠區報備系統（新增） -->
+<div class="section card-factory" id="factory-report">
+    <h2>🏭 廠區報備系統</h2>
+    <div class="highlight">
+        廠區駐診出勤報備，統一登錄進出紀錄
+    </div>
+    <ul>
+        <li>線上填寫廠區報備資訊</li>
+        <li>查詢過往報備紀錄</li>
+        <li>確認駐診時間與地點</li>
+    </ul>
+    <div class="highlight">
+        注意事項：每次駐診前請務必完成報備，確保系統紀錄完整
+    </div>
+    <a href="https://cgmherlink-hub.github.io/ReportData/" class="card-link-btn btn-factory" target="_blank">前往廠區報備系統</a>
 </div>
 
 </div>
