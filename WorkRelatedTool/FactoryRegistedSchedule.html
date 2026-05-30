@@ -1,1 +1,395 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+  <a href="https://d8600010-gmail.github.io/DRJimmyHealthExaminationMedicalEducation/" class="nav-link">🏠 <span>回到首頁</span></a>
+    <a href="javascript:history.back()" class="nav-link">⬅️ <span>回到上一頁</span></a>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>報備表單</title>
+ <!-- ── Sticky Nav Bar ── -->
+<nav class="top-nav">
+  <div class="nav-left">
+    <a href="https://d8600010-gmail.github.io/DRJimmyHealthExaminationMedicalEducation/" class="nav-link">🏠 <span>回到首頁</span></a>
+    <a href="javascript:history.back()" class="nav-link">⬅️ <span>回到上一頁</span></a>
+  </div>
+  <div class="visitor-badge">
+    <span class="vb-label">👥 今日到訪</span>
+    <span class="vb-count" id="today-count">—</span>
+    <span class="vb-sub">累計 <span id="total-count">—</span> 人次</span>
+  </div>
+</nav>
 
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: Arial, sans-serif; background: #f0f4f8; min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 24px; }
+  .card { background: #fff; border-radius: 16px; box-shadow: 0 4px 24px rgba(0,0,0,0.10); padding: 32px 28px; width: 100%; max-width: 480px; }
+  h2 { text-align: center; font-size: 1.4rem; color: #1a3c5e; margin-bottom: 24px; letter-spacing: 1px; }
+  .field { margin-bottom: 16px; }
+  label { display: block; font-size: 0.85rem; font-weight: bold; color: #444; margin-bottom: 5px; }
+  input[type=text], input[type=date], input[type=time], select, textarea { width: 100%; padding: 9px 12px; border: 1px solid #ccd6e0; border-radius: 8px; font-size: 0.95rem; color: #222; background: #f8fafc; transition: border 0.2s; outline: none; }
+  input:focus, select:focus, textarea:focus { border-color: #3b82f6; background: #fff; }
+  .row { display: flex; gap: 12px; }
+  .row .field { flex: 1; }
+  textarea { resize: vertical; min-height: 60px; }
+  .shift-box { display: flex; gap: 20px; padding: 9px 12px; background: #f8fafc; border: 1px solid #ccd6e0; border-radius: 8px; }
+  .shift-box label { font-weight: normal; display: flex; align-items: center; gap: 6px; cursor: pointer; margin: 0; font-size: 0.9rem; }
+  .shift-box input[type=checkbox] { width: auto; cursor: pointer; accent-color: #3b82f6; }
+  .btn { width: 100%; margin-top: 8px; padding: 12px; background: #1a3c5e; color: #fff; border: none; border-radius: 10px; font-size: 1rem; font-weight: bold; cursor: pointer; letter-spacing: 1px; transition: background 0.2s; }
+  .btn:hover { background: #2563a8; }
+  .btn-copy { background: #0891b2; }
+  .btn-copy:hover { background: #0e7490; }
+  .btn-add { background: #6366f1; }
+  .btn-add:hover { background: #4f46e5; }
+  .btn-send { background: #16a34a; }
+  .btn-send:hover { background: #15803d; }
+  .error { color: #e53e3e; font-size: 0.82rem; margin-top: 4px; }
+  .entry-block { margin-top: 20px; padding: 16px; background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 12px; position: relative; }
+  .entry-title { font-weight: bold; color: #6366f1; margin-bottom: 12px; font-size: 0.9rem; }
+  .btn-remove { position: absolute; top: 12px; right: 12px; background: #fee2e2; border: none; border-radius: 6px; padding: 4px 10px; color: #dc2626; cursor: pointer; font-size: 0.8rem; }
+  .summary-box { display: none; margin-top: 18px; background: #f0f6ff; border: 1px solid #bcd4f5; border-radius: 10px; padding: 16px; }
+  .summary-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+  .summary-title { font-weight: bold; color: #1a3c5e; font-size: 0.95rem; }
+  .btn-excel { background: #217346; color: #fff; border: none; border-radius: 6px; padding: 5px 12px; font-size: 0.8rem; cursor: pointer; }
+  .summary-scroll { overflow-x: auto; }
+  .summary-table { width: 100%; border-collapse: collapse; font-size: 0.88rem; background: #fff; }
+  .summary-table th { padding: 7px 10px; border: 1px solid #aaa; white-space: nowrap; background: #217346; color: #fff; }
+  .summary-table td { padding: 6px 10px; border: 1px solid #ccc; white-space: nowrap; }
+  .toast { display: none; position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); background: #22c55e; color: #fff; padding: 12px 28px; border-radius: 30px; font-size: 0.95rem; box-shadow: 0 4px 12px rgba(0,0,0,0.15); z-index: 999; }
+</style>
+</head>
+<body>
+<div class="card">
+  <h2>📋 報備資料填寫</h2>
+
+  <div class="field">
+    <label>姓名 *</label>
+    <input type="text" id="name" value="陳進明">
+    <div class="error" id="err-name"></div>
+  </div>
+
+  <div class="field">
+    <label>日期 *</label>
+    <input type="date" id="date">
+    <div class="error" id="err-date"></div>
+  </div>
+
+  <div class="field">
+    <label>時段</label>
+    <div class="shift-box">
+      <label><input type="checkbox" id="chk-am" onchange="applyShift('main')"> 上午（08:00–12:00）</label>
+      <label><input type="checkbox" id="chk-pm" onchange="applyShift('main')"> 下午（13:00–17:00）</label>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="field">
+      <label>開始時間 *</label>
+      <input type="time" id="start" onchange="syncCheckboxes('main')">
+      <div class="error" id="err-start"></div>
+    </div>
+    <div class="field">
+      <label>結束時間 *</label>
+      <input type="time" id="end" onchange="syncCheckboxes('main')">
+      <div class="error" id="err-end"></div>
+    </div>
+  </div>
+
+  <div class="field">
+    <label>廠區 *</label>
+    <select id="site" onchange="fillAddress('main')">
+      <option value="">-- 請選擇廠區 --</option>
+      <option>台達電子工業股份有限公司</option>
+      <option>臺北市政府環境保護局</option>
+      <option>新北市政府環境保護局</option>
+      <option>富利餐飲股份有限公司</option>
+    </select>
+    <div class="error" id="err-site"></div>
+  </div>
+
+  <div class="field">
+    <label>地址 *</label>
+    <input type="text" id="address" placeholder="選擇廠區後自動帶入，或手動輸入">
+    <div class="error" id="err-address"></div>
+  </div>
+
+  <div class="field">
+    <label>備註</label>
+    <textarea id="note">執勤地點依照廠區安排</textarea>
+  </div>
+
+  <div id="extra-entries"></div>
+
+  <button class="btn btn-copy" onclick="copyEntry()">📋 複製一筆報備資料</button>
+  <button class="btn btn-add" onclick="addEntry()">➕ 新增一筆報備資料</button>
+
+  <div class="summary-box" id="summary-box">
+    <div class="summary-header">
+      <span class="summary-title">📄 請確認以下資料</span>
+      <button class="btn-excel" onclick="downloadExcel()">⬇️ 下載 Excel</button>
+    </div>
+    <div class="summary-scroll">
+      <table class="summary-table">
+        <thead>
+          <tr><th>姓名</th><th>日期</th><th>開始時間</th><th>結束時間</th><th>廠區</th><th>地址</th><th>備註</th></tr>
+        </thead>
+        <tbody id="summary-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <button class="btn" id="main-btn" onclick="handleBtn()" style="margin-top:16px;">📄 預覽摘要</button>
+</div>
+
+<div class="toast" id="toast">✅ 正在開啟郵件程式...</div>
+
+<script>
+var addressMap = {
+  "台達電子工業股份有限公司": "桃園市中壢區中園路18號",
+  "臺北市政府環境保護局": "臺北市信義區市府路1號",
+  "新北市政府環境保護局": "新北市板橋區中山路一段161號",
+  "富利餐飲股份有限公司": "臺北市中山區南京東路二段68號"
+};
+
+document.getElementById("date").value = new Date().toISOString().split("T")[0];
+
+var entryCount = 0;
+var previewed = false;
+
+var siteOptions = [
+  "台達電子工業股份有限公司",
+  "臺北市政府環境保護局",
+  "新北市政府環境保護局",
+  "富利餐飲股份有限公司"
+];
+
+function getSiteOptionsHTML(selected) {
+  var html = '<option value="">-- 請選擇廠區 --</option>';
+  for (var i = 0; i < siteOptions.length; i++) {
+    html += '<option' + (siteOptions[i] === selected ? ' selected' : '') + '>' + siteOptions[i] + '</option>';
+  }
+  return html;
+}
+
+function getVal(id) {
+  var el = document.getElementById(id);
+  return el ? el.value : "";
+}
+
+function applyShift(id) {
+  var amId = id === 'main' ? 'chk-am' : 'chk-am-' + id;
+  var pmId = id === 'main' ? 'chk-pm' : 'chk-pm-' + id;
+  var startId = id === 'main' ? 'start' : 'start-' + id;
+  var endId   = id === 'main' ? 'end'   : 'end-'   + id;
+  var am = document.getElementById(amId).checked;
+  var pm = document.getElementById(pmId).checked;
+  var startEl = document.getElementById(startId);
+  var endEl   = document.getElementById(endId);
+  if (am && pm)       { startEl.value = "08:00"; endEl.value = "17:00"; }
+  else if (am && !pm) { startEl.value = "08:00"; endEl.value = "12:00"; }
+  else if (!am && pm) { startEl.value = "13:00"; endEl.value = "17:00"; }
+  else                { startEl.value = "";       endEl.value = ""; }
+  resetPreview();
+}
+
+function syncCheckboxes(id) {
+  var startId = id === 'main' ? 'start' : 'start-' + id;
+  var endId   = id === 'main' ? 'end'   : 'end-'   + id;
+  var amId    = id === 'main' ? 'chk-am' : 'chk-am-' + id;
+  var pmId    = id === 'main' ? 'chk-pm' : 'chk-pm-' + id;
+  var s = getVal(startId), e = getVal(endId);
+  document.getElementById(amId).checked = (s === "08:00" && (e === "12:00" || e === "17:00"));
+  document.getElementById(pmId).checked = (e === "17:00" && (s === "13:00" || s === "08:00"));
+}
+
+function fillAddress(id) {
+  var siteId = id === 'main' ? 'site' : 'site-' + id;
+  var addrId = id === 'main' ? 'address' : 'address-' + id;
+  var site = getVal(siteId);
+  document.getElementById(addrId).value = addressMap[site] || "";
+}
+
+function buildEntryHTML(id, data) {
+  var d = data || {};
+  return '<div class="entry-title">📋 第 ' + (id+1) + ' 筆報備資料</div>' +
+    '<button class="btn-remove" onclick="removeEntry(' + id + ')">✕ 移除</button>' +
+    '<div class="field"><label>日期 *</label><input type="date" id="date-' + id + '" value="' + (d.date||"") + '"></div>' +
+    '<div class="field"><label>時段</label><div class="shift-box">' +
+      '<label><input type="checkbox" id="chk-am-' + id + '" onchange="applyShift(' + id + ')"> 上午（08:00–12:00）</label>' +
+      '<label><input type="checkbox" id="chk-pm-' + id + '" onchange="applyShift(' + id + ')"> 下午（13:00–17:00）</label>' +
+    '</div></div>' +
+    '<div class="row">' +
+      '<div class="field"><label>開始時間 *</label><input type="time" id="start-' + id + '" value="' + (d.start||"") + '" onchange="syncCheckboxes(' + id + ')"></div>' +
+      '<div class="field"><label>結束時間 *</label><input type="time" id="end-' + id + '" value="' + (d.end||"") + '" onchange="syncCheckboxes(' + id + ')"></div>' +
+    '</div>' +
+    '<div class="field"><label>廠區 *</label><select id="site-' + id + '" onchange="fillAddress(' + id + ')">' + getSiteOptionsHTML(d.site||"") + '</select></div>' +
+    '<div class="field"><label>地址 *</label><input type="text" id="address-' + id + '" value="' + (d.address||"") + '" placeholder="選擇廠區後自動帶入，或手動輸入"></div>' +
+    '<div class="field"><label>備註</label><textarea id="note-' + id + '">' + (d.note||"") + '</textarea></div>';
+}
+
+function addEntry() {
+  entryCount++;
+  var id = entryCount;
+  var today = new Date().toISOString().split("T")[0];
+  var div = document.createElement("div");
+  div.id = "entry-" + id;
+  div.className = "entry-block";
+  div.innerHTML = buildEntryHTML(id, { date: today });
+  document.getElementById("extra-entries").appendChild(div);
+  resetPreview();
+}
+
+function copyEntry() {
+  var srcId = 'main';
+  for (var i = entryCount; i >= 1; i--) {
+    if (document.getElementById("entry-" + i)) { srcId = i; break; }
+  }
+  var isMain = srcId === 'main';
+  var data = {
+    date:    isMain ? getVal("date")    : getVal("date-"    + srcId),
+    start:   isMain ? getVal("start")   : getVal("start-"   + srcId),
+    end:     isMain ? getVal("end")     : getVal("end-"     + srcId),
+    site:    isMain ? getVal("site")    : getVal("site-"    + srcId),
+    address: isMain ? getVal("address") : getVal("address-" + srcId),
+    note:    isMain ? getVal("note")    : getVal("note-"    + srcId)
+  };
+  entryCount++;
+  var id = entryCount;
+  var div = document.createElement("div");
+  div.id = "entry-" + id;
+  div.className = "entry-block";
+  div.innerHTML = buildEntryHTML(id, data);
+  document.getElementById("extra-entries").appendChild(div);
+  syncCheckboxes(id);
+  resetPreview();
+}
+
+function removeEntry(id) {
+  var el = document.getElementById("entry-" + id);
+  if (el) el.remove();
+  resetPreview();
+}
+
+function validate() {
+  var required = [
+    { id: "name",    err: "err-name",    msg: "請輸入姓名" },
+    { id: "date",    err: "err-date",    msg: "請選擇日期" },
+    { id: "start",   err: "err-start",   msg: "請選擇開始時間" },
+    { id: "end",     err: "err-end",     msg: "請選擇結束時間" },
+    { id: "site",    err: "err-site",    msg: "請選擇廠區" },
+    { id: "address", err: "err-address", msg: "請輸入地址" }
+  ];
+  var valid = true;
+  for (var i = 0; i < required.length; i++) {
+    var f = required[i];
+    var el = document.getElementById(f.id);
+    var errEl = document.getElementById(f.err);
+    if (!el.value.trim()) { errEl.textContent = f.msg; valid = false; }
+    else errEl.textContent = "";
+  }
+  return valid;
+}
+
+function collectRows() {
+  var name = getVal("name").trim();
+  var rows = [{
+    name: name,
+    date: getVal("date"), start: getVal("start"), end: getVal("end"),
+    site: getVal("site"), address: getVal("address").trim(),
+    note: getVal("note").trim() || "（無）"
+  }];
+  for (var i = 1; i <= entryCount; i++) {
+    if (!document.getElementById("entry-" + i)) continue;
+    rows.push({
+      name: name,
+      date: getVal("date-" + i), start: getVal("start-" + i), end: getVal("end-" + i),
+      site: getVal("site-" + i), address: getVal("address-" + i),
+      note: getVal("note-" + i) || "（無）"
+    });
+  }
+  return rows;
+}
+
+function resetPreview() {
+  previewed = false;
+  document.getElementById("summary-box").style.display = "none";
+  var btn = document.getElementById("main-btn");
+  btn.textContent = "📄 預覽摘要";
+  btn.className = "btn";
+}
+
+function handleBtn() {
+  if (!previewed) {
+    if (!validate()) return;
+    showSummary();
+    previewed = true;
+    var btn = document.getElementById("main-btn");
+    btn.textContent = "📧 送出報備";
+    btn.className = "btn btn-send";
+  } else {
+    sendEmail();
+  }
+}
+
+function showSummary() {
+  var rows = collectRows();
+  var tbody = document.getElementById("summary-tbody");
+  tbody.innerHTML = "";
+  for (var i = 0; i < rows.length; i++) {
+    var r = rows[i];
+    var tr = document.createElement("tr");
+    tr.style.background = i % 2 === 0 ? "#f0f7f0" : "#fff";
+    tr.innerHTML = '<td>' + r.name + '</td><td>' + r.date + '</td><td>' + r.start + '</td><td>' + r.end + '</td><td>' + r.site + '</td><td>' + r.address + '</td><td>' + r.note + '</td>';
+    tbody.appendChild(tr);
+  }
+  document.getElementById("summary-box").style.display = "block";
+  var inputs = document.querySelectorAll("input, select, textarea");
+  for (var j = 0; j < inputs.length; j++) {
+    inputs[j].addEventListener("change", resetPreview, { once: true });
+  }
+}
+
+function sendEmail() {
+  if (!validate()) return;
+  var rows = collectRows();
+  var name = rows[0].name;
+  var subject = "報備資料 - " + name;
+  var bodyParts = ["姓名: " + name + "\n"];
+  for (var i = 0; i < rows.length; i++) {
+    var r = rows[i];
+    if (i > 0) bodyParts.push("\n--- 第 " + (i+1) + " 筆 ---");
+    bodyParts.push("日期: " + r.date + "\n時間: " + r.start + " - " + r.end + "\n廠區: " + r.site + "\n地址: " + r.address + "\n備註: " + r.note);
+  }
+  window.location.href = "mailto:\"急診科-婉容\"<sammi82475@cgmh.org.tw>?subject=" + encodeURIComponent(subject) + "&body=" + encodeURIComponent(bodyParts.join("\n"));
+  var toast = document.getElementById("toast");
+  toast.style.display = "block";
+  setTimeout(function() { toast.style.display = "none"; }, 3000);
+}
+
+function downloadExcel() {
+  var rows = collectRows();
+  var headers = ["姓名","日期","開始時間","結束時間","廠區","地址","備註"];
+  var lines = [headers.join("\t")];
+  for (var i = 0; i < rows.length; i++) {
+    var r = rows[i];
+    lines.push([r.name, r.date, r.start, r.end, r.site, r.address, r.note].join("\t"));
+  }
+  var content = "\uFEFF" + lines.join("\r\n");
+  var blob = new Blob([content], { type: "application/vnd.ms-excel;charset=utf-8" });
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement("a");
+  a.style.display = "none";
+  a.href = url;
+  var now = new Date();
+  var roc = (now.getFullYear() - 1911).toString();
+  var mon = (now.getMonth() + 1).toString().padStart(2, "0");
+  a.download = roc + mon + "報備資料_" + getVal("name").trim() + ".xls";
+  document.body.appendChild(a);
+  a.click();
+  setTimeout(function() {
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  }, 100);
+}
+</script>
+</body>
+</html>
