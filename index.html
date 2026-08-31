@@ -58,7 +58,6 @@ h2 {
     border-left: 4px solid #2c7be5;
     margin: 10px 0;
 }
-
 /* New card styles */
 .section.card-emergency {
     border-left: 5px solid #e85d04;
@@ -70,7 +69,6 @@ h2 {
     background: #fff3e0;
     border-left-color: #e85d04;
 }
-
 .section.card-factory {
     border-left: 5px solid #1b9e75;
 }
@@ -81,7 +79,16 @@ h2 {
     background: #e1f5ee;
     border-left-color: #1b9e75;
 }
-
+.section.card-phonelist {
+    border-left: 5px solid #6f42c1;
+}
+.section.card-phonelist h2 {
+    color: #6f42c1;
+}
+.section.card-phonelist .highlight {
+    background: #f1eafb;
+    border-left-color: #6f42c1;
+}
 .card-link-btn {
     display: inline-block;
     margin-top: 12px;
@@ -103,6 +110,10 @@ h2 {
     background-color: #1b9e75;
     color: white;
 }
+.btn-phonelist {
+    background-color: #6f42c1;
+    color: white;
+}
 </style>
 </head>
 <body>
@@ -120,9 +131,9 @@ h2 {
     <a href="#pregnancy-pain">孕期疼痛</a>
     <a href="#emergency-booking">急診班預約</a>
     <a href="#factory-report">廠區報備系統</a>
+    <a href="#phonelist">全院電話一覽表</a>
 </nav>
 <div class="container">
-
 <!-- 流感 -->
 <div class="section" id="flu">
     <h2>流感藥物的使用說明</h2>
@@ -141,7 +152,6 @@ h2 {
         高風險族群：老人、孕婦、慢性病患者 → 建議早期使用
     </div>
 </div>
-
 <!-- LDL -->
 <div class="section" id="ldl">
     <h2>低密度膽固醇（LDL）計算公式</h2>
@@ -160,7 +170,6 @@ h2 {
         高風險患者：LDL &lt; 70 mg/dL
     </div>
 </div>
-
 <!-- 胸部X光 -->
 <div class="section" id="cxr">
     <h2>胸部X光判讀方法（CXR）</h2>
@@ -178,7 +187,6 @@ h2 {
         常見異常：肺炎、氣胸、心臟擴大
     </div>
 </div>
-
 <!-- 腹部X光 -->
 <div class="section" id="axr">
     <h2>腹部X光判讀方法（AXR）</h2>
@@ -194,7 +202,6 @@ h2 {
         典型表現：Step ladder sign（小腸阻塞）
     </div>
 </div>
-
 <!-- CT -->
 <div class="section" id="ct">
     <h2>電腦斷層（CT）判讀方法</h2>
@@ -211,7 +218,6 @@ h2 {
         同一切面「左右比較」最重要
     </div>
 </div>
-
 <!-- 產程疼痛控制 -->
 <div class="section" id="labor-pain">
     <h2>產程疼痛控制（Labor Pain Control）</h2>
@@ -228,7 +234,6 @@ h2 {
         注意事項：依產程進展與產婦狀況選擇最適方式
     </div>
 </div>
-
 <!-- 孕期疼痛控制 -->
 <div class="section" id="pregnancy-pain">
     <h2>孕期疼痛控制（Pregnancy Pain Control）</h2>
@@ -245,7 +250,6 @@ h2 {
         高風險族群：妊娠糖尿病、高血壓患者用藥需更謹慎
     </div>
 </div>
-
 <!-- 急診班的預約（新增） -->
 <div class="section card-emergency" id="emergency-booking">
     <h2>🚑 急診班的預約</h2>
@@ -262,7 +266,6 @@ h2 {
     </div>
     <a href="./WorkRelateTool/EmergencyDutyBooking.html" class="card-link-btn btn-emergency">前往急診班預約</a>
 </div>
-
 <!-- 廠區報備系統（新增） -->
 <div class="section card-factory" id="factory-report">
     <h2>🏭 廠區報備系統</h2>
@@ -279,7 +282,23 @@ h2 {
     </div>
     <a href="https://cgmherlink-hub.github.io/WorkRelatedTool/FactorDutyBooking.html/" class="card-link-btn btn-factory" target="_blank">前往廠區報備系統</a>
 </div>
-
+<!-- 全院電話一覽表（新增） -->
+<div class="section card-phonelist" id="phonelist">
+    <h2>☎️ 全院電話一覽表</h2>
+    <div class="highlight">
+        全院各單位、內線、醫師與專師、餐飲店家等分機速查，附搜尋功能
+    </div>
+    <ul>
+        <li>加護病房 / 兒童醫院 / 病房分機</li>
+        <li>內線電話與轉接方法</li>
+        <li>醫師與專科護理師 GSM</li>
+        <li>餐飲、生活機能分機</li>
+    </ul>
+    <div class="highlight">
+        注意事項：詳細內容請見 team 公佈欄最新版本
+    </div>
+    <a href="./phonelist.html" class="card-link-btn btn-phonelist">前往全院電話一覽表</a>
+</div>
 </div>
 </body>
 </html>
