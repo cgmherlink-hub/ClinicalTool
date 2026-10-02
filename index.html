@@ -4,43 +4,90 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>常用的臨床工具</title>
-<nav class="top-nav">
-  <div class="nav-left">
-    <a href="https://d8600010-gmail.github.io/DRJimmyHealthExaminationMedicalEducation/" class="nav-link">🏠 <span>回到首頁</span></a>
-    <a href="javascript:history.back()" class="nav-link">⬅️ <span>回到上一頁</span></a>
-  </div>
-  <div class="visitor-badge">
-    <span class="vb-label">👥 今日到訪</span>
-    <span class="vb-count" id="today-count">—</span>
-    <span class="vb-sub">累計 <span id="total-count">—</span> 人次</span>
-  </div>
-</nav>
 <style>
 body {
-    font-family: "Noto Sans TC", Arial, sans-serif;
+    font-family: "Noto Sans TC", "Microsoft JhengHei", Arial, sans-serif;
     margin: 0;
     background-color: #f5f7fa;
     line-height: 1.6;
 }
+
+/* Top navigation bar */
+.top-nav {
+    background: #1a365d;
+    color: white;
+    padding: 10px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+.top-nav .nav-left {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+.top-nav .nav-link {
+    color: white;
+    text-decoration: none;
+    font-size: 14px;
+    padding: 6px 12px;
+    border-radius: 6px;
+    background: rgba(255,255,255,0.12);
+    transition: background 0.2s;
+}
+.top-nav .nav-link:hover {
+    background: rgba(255,255,255,0.25);
+}
+.visitor-badge {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    background: rgba(255,255,255,0.1);
+    padding: 6px 14px;
+    border-radius: 20px;
+}
+.vb-label { opacity: 0.85; }
+.vb-count {
+    font-weight: bold;
+    font-size: 16px;
+    color: #fbbf24;
+}
+.vb-sub { opacity: 0.75; font-size: 12px; }
+
 header {
     background-color: #2c7be5;
     color: white;
     padding: 20px;
     text-align: center;
 }
-nav {
+nav.main-nav {
     background: #ffffff;
     padding: 15px;
     border-bottom: 1px solid #ddd;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
 }
-nav a {
-    margin-right: 15px;
+nav.main-nav a {
+    margin-right: 8px;
     text-decoration: none;
     color: #2c7be5;
     font-weight: bold;
+    font-size: 14px;
+    padding: 4px 8px;
+    border-radius: 4px;
+    transition: background 0.15s;
+}
+nav.main-nav a:hover {
+    background: #e9f2ff;
 }
 .container {
     padding: 20px;
+    max-width: 1100px;
+    margin: 0 auto;
 }
 .section {
     background: white;
@@ -58,7 +105,8 @@ h2 {
     border-left: 4px solid #2c7be5;
     margin: 10px 0;
 }
-/* New card styles */
+
+/* Card variants */
 .section.card-emergency {
     border-left: 5px solid #e85d04;
 }
@@ -89,6 +137,27 @@ h2 {
     background: #f1eafb;
     border-left-color: #6f42c1;
 }
+.section.card-selfpay {
+    border-left: 5px solid #0f766e;
+}
+.section.card-selfpay h2 {
+    color: #0f766e;
+}
+.section.card-selfpay .highlight {
+    background: #ecfdf5;
+    border-left-color: #0f766e;
+}
+.section.card-zoster {
+    border-left: 5px solid #7c3aed;
+}
+.section.card-zoster h2 {
+    color: #7c3aed;
+}
+.section.card-zoster .highlight {
+    background: #f5f3ff;
+    border-left-color: #7c3aed;
+}
+
 .card-link-btn {
     display: inline-block;
     margin-top: 12px;
@@ -114,14 +183,37 @@ h2 {
     background-color: #6f42c1;
     color: white;
 }
+.btn-selfpay {
+    background-color: #0f766e;
+    color: white;
+}
+.btn-zoster {
+    background-color: #7c3aed;
+    color: white;
+}
 </style>
 </head>
 <body>
+
+<!-- Top navigation -->
+<nav class="top-nav">
+  <div class="nav-left">
+    <a href="https://d8600010-gmail.github.io/DRJimmyHealthExaminationMedicalEducation/" class="nav-link">🏠 <span>回到首頁</span></a>
+    <a href="javascript:history.back()" class="nav-link">⬅️ <span>回到上一頁</span></a>
+  </div>
+  <div class="visitor-badge">
+    <span class="vb-label">👥 今日到訪</span>
+    <span class="vb-count" id="today-count">—</span>
+    <span class="vb-sub">累計 <span id="total-count">—</span> 人次</span>
+  </div>
+</nav>
+
 <header>
     <h1>常用的臨床工具</h1>
     <p>診間快速查詢 × 醫學重點整理</p>
 </header>
-<nav>
+
+<nav class="main-nav">
     <a href="#flu">流感藥物</a>
     <a href="#ldl">LDL計算</a>
     <a href="#cxr">胸部X光</a>
@@ -129,11 +221,15 @@ h2 {
     <a href="#ct">電腦斷層</a>
     <a href="#labor-pain">產程疼痛</a>
     <a href="#pregnancy-pain">孕期疼痛</a>
+    <a href="#selfpay">自費流程</a>
+    <a href="#zoster">帶狀皰疹疫苗</a>
     <a href="#emergency-booking">急診班預約</a>
     <a href="#factory-report">廠區報備系統</a>
     <a href="#phonelist">全院電話一覽表</a>
 </nav>
+
 <div class="container">
+
 <!-- 流感 -->
 <div class="section" id="flu">
     <h2>流感藥物的使用說明</h2>
@@ -152,6 +248,7 @@ h2 {
         高風險族群：老人、孕婦、慢性病患者 → 建議早期使用
     </div>
 </div>
+
 <!-- LDL -->
 <div class="section" id="ldl">
     <h2>低密度膽固醇（LDL）計算公式</h2>
@@ -170,6 +267,7 @@ h2 {
         高風險患者：LDL &lt; 70 mg/dL
     </div>
 </div>
+
 <!-- 胸部X光 -->
 <div class="section" id="cxr">
     <h2>胸部X光判讀方法（CXR）</h2>
@@ -187,6 +285,7 @@ h2 {
         常見異常：肺炎、氣胸、心臟擴大
     </div>
 </div>
+
 <!-- 腹部X光 -->
 <div class="section" id="axr">
     <h2>腹部X光判讀方法（AXR）</h2>
@@ -202,6 +301,7 @@ h2 {
         典型表現：Step ladder sign（小腸阻塞）
     </div>
 </div>
+
 <!-- CT -->
 <div class="section" id="ct">
     <h2>電腦斷層（CT）判讀方法</h2>
@@ -218,6 +318,7 @@ h2 {
         同一切面「左右比較」最重要
     </div>
 </div>
+
 <!-- 產程疼痛控制 -->
 <div class="section" id="labor-pain">
     <h2>產程疼痛控制（Labor Pain Control）</h2>
@@ -234,6 +335,7 @@ h2 {
         注意事項：依產程進展與產婦狀況選擇最適方式
     </div>
 </div>
+
 <!-- 孕期疼痛控制 -->
 <div class="section" id="pregnancy-pain">
     <h2>孕期疼痛控制（Pregnancy Pain Control）</h2>
@@ -250,7 +352,44 @@ h2 {
         高風險族群：妊娠糖尿病、高血壓患者用藥需更謹慎
     </div>
 </div>
-<!-- 急診班的預約（新增） -->
+
+<!-- 自費流程（新增） -->
+<div class="section card-selfpay" id="selfpay">
+    <h2>💰 自費流程指南</h2>
+    <div class="highlight">
+        未投保或選擇自費病患的完整作業流程：從掛號、費用預估到收款結清
+    </div>
+    <ul>
+        <li>病患掛號與資料建檔</li>
+        <li>費用預估與善意費用預估</li>
+        <li>財務諮詢與折扣說明</li>
+        <li>事前收款、服務執行與最終帳單</li>
+    </ul>
+    <div class="highlight">
+        適用對象：自費病患、未投保者，或選擇不使用保險的個案
+    </div>
+    <a href="./selfpay-process.html" class="card-link-btn btn-selfpay">前往自費流程指南</a>
+</div>
+
+<!-- 帶狀皰疹疫苗（新增） -->
+<div class="section card-zoster" id="zoster">
+    <h2>💉 台灣帶狀皰疹（皮蛇）疫苗指南</h2>
+    <div class="highlight">
+        完整說明疫苗種類、保護力、自費價格、接種流程與各縣市補助資訊
+    </div>
+    <ul>
+        <li>欣剋疹（Shingrix）vs 伏帶疹（Zostavax）比較</li>
+        <li>自費接種 6 步驟流程</li>
+        <li>各縣市補助資格與金額提醒</li>
+        <li>接種相關圖片說明</li>
+    </ul>
+    <div class="highlight">
+        建議對象：50 歲以上成人，或 18 歲以上高風險族群
+    </div>
+    <a href="./taiwan-zoster-vaccine-guide.html" class="card-link-btn btn-zoster">前往帶狀皰疹疫苗指南</a>
+</div>
+
+<!-- 急診班的預約 -->
 <div class="section card-emergency" id="emergency-booking">
     <h2>🚑 急診班的預約</h2>
     <div class="highlight">
@@ -266,7 +405,8 @@ h2 {
     </div>
     <a href="./WorkRelateTool/EmergencyDutyBooking.html" class="card-link-btn btn-emergency">前往急診班預約</a>
 </div>
-<!-- 廠區報備系統（新增） -->
+
+<!-- 廠區報備系統 -->
 <div class="section card-factory" id="factory-report">
     <h2>🏭 廠區報備系統</h2>
     <div class="highlight">
@@ -282,7 +422,8 @@ h2 {
     </div>
     <a href="https://cgmherlink-hub.github.io/WorkRelatedTool/FactorDutyBooking.html/" class="card-link-btn btn-factory" target="_blank">前往廠區報備系統</a>
 </div>
-<!-- 全院電話一覽表（新增） -->
+
+<!-- 全院電話一覽表 -->
 <div class="section card-phonelist" id="phonelist">
     <h2>☎️ 全院電話一覽表</h2>
     <div class="highlight">
@@ -299,6 +440,8 @@ h2 {
     </div>
     <a href="./phonelist.html" class="card-link-btn btn-phonelist">前往全院電話一覽表</a>
 </div>
+
 </div>
+
 </body>
 </html>
