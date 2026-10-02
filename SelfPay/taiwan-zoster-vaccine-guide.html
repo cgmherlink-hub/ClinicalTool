@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>台灣帶狀皰疹（皮蛇）疫苗指南</title>
+    <style>
+        :root {
+            --primary: #7c3aed;
+            --primary-dark: #5b21b6;
+            --primary-light: #a78bfa;
+            --accent: #f59e0b;
+            --bg: #f8fafc;
+            --card: #ffffff;
+            --text: #1e293b;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+            --success: #059669;
+            --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: "Microsoft JhengHei", "PingFang TC", "Noto Sans TC", "Segoe UI", system-ui, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.7;
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            padding: 3rem 1.5rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%; left: -50%;
+            width: 200%; height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.08) 0%, transparent 60%);
+            animation: pulse 15s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 0.5; }
+            50% { transform: scale(1.1); opacity: 0.8; }
+        }
+
+        .header h1 {
+            font-size: 2.4rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            position: relative;
+        }
+
+        .header p {
+            font-size: 1.15rem;
+            opacity: 0.92;
+            max-width: 640px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 2.5rem 1.5rem 4rem;
+        }
+
+        .intro {
+            background: var(--card);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 2.5rem;
+            box-shadow: var(--shadow);
+            border-left: 5px solid var(--primary);
+        }
+
+        .intro h2 {
+            color: var(--primary);
+            margin-bottom: 0.75rem;
+            font-size: 1.4rem;
+        }
+
+        .intro p { color: var(--text-muted); }
+
+        .section {
+            background: var(--card);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow);
+        }
+
+        .section h2 {
+            color: var(--primary-dark);
+            font-size: 1.4rem;
+            margin-bottom: 1.25rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--primary-light);
+        }
+
+        .section h3 {
+            color: var(--text);
+            font-size: 1.15rem;
+            margin: 1.25rem 0 0.6rem;
+        }
+
+        .section p, .section li {
+            color: var(--text-muted);
+            margin-bottom: 0.5rem;
+        }
+
+        .section ul {
+            padding-left: 1.4rem;
+            margin-bottom: 1rem;
+        }
+
+        /* Comparison table */
+        .compare-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.25rem 0;
+            font-size: 0.95rem;
+        }
+
+        .compare-table th,
+        .compare-table td {
+            border: 1px solid var(--border);
+            padding: 0.85rem 1rem;
+            text-align: left;
+        }
+
+        .compare-table th {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            font-weight: 600;
+        }
+
+        .compare-table tr:nth-child(even) {
+            background: #f8f5ff;
+        }
+
+        .compare-table td:first-child {
+            font-weight: 600;
+            color: var(--text);
+            white-space: nowrap;
+        }
+
+        /* Highlight box */
+        .highlight {
+            background: linear-gradient(135deg, #f5f3ff 0%, #ede9fe 100%);
+            border: 1px solid #c4b5fd;
+            border-radius: 12px;
+            padding: 1.25rem 1.5rem;
+            margin: 1.25rem 0;
+        }
+
+        .highlight strong { color: var(--primary-dark); }
+
+        /* Steps */
+        .steps {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            margin-top: 1rem;
+        }
+
+        .step {
+            display: grid;
+            grid-template-columns: 60px 1fr;
+            gap: 1.25rem;
+            align-items: start;
+        }
+
+        .step-num {
+            width: 52px;
+            height: 52px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+            font-weight: 700;
+            flex-shrink: 0;
+            box-shadow: 0 4px 12px rgba(124, 58, 237, 0.3);
+        }
+
+        .step-body h4 {
+            font-size: 1.1rem;
+            margin-bottom: 0.3rem;
+        }
+
+        /* Image gallery */
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            gap: 1.25rem;
+            margin-top: 1.5rem;
+        }
+
+        .gallery-item {
+            background: #f8fafc;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid var(--border);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .gallery-item:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 180px;
+            object-fit: contain;
+            background: #f1f5f9;
+            display: block;
+        }
+
+        .gallery-item .caption {
+            padding: 0.7rem 1rem;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            text-align: center;
+            border-top: 1px solid var(--border);
+        }
+
+        .image-placeholder {
+            width: 100%;
+            height: 180px;
+            background: linear-gradient(135deg, #e2e8f0 0%, #f1f5f9 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            border: 2px dashed #cbd5e1;
+        }
+
+        .image-placeholder span {
+            font-size: 2rem;
+            margin-bottom: 0.3rem;
+        }
+
+        /* Summary */
+        .summary {
+            margin-top: 2.5rem;
+            background: linear-gradient(135deg, #f5f3ff 0%, #ede9fe 100%);
+            border: 1px solid #c4b5fd;
+            border-radius: 16px;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .summary h2 {
+            color: var(--primary-dark);
+            margin-bottom: 0.75rem;
+            border: none;
+        }
+
+        .summary p {
+            color: var(--text-muted);
+            max-width: 700px;
+            margin: 0 auto 1.5rem;
+        }
+
+        .btn {
+            display: inline-block;
+            background: var(--primary);
+            color: white;
+            padding: 0.85rem 2rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: background 0.2s, transform 0.2s;
+            box-shadow: 0 4px 12px rgba(124, 58, 237, 0.25);
+        }
+
+        .btn:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+
+        footer {
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            border-top: 1px solid var(--border);
+            margin-top: 2rem;
+        }
+
+        @media (max-width: 640px) {
+            .header h1 { font-size: 1.7rem; }
+            .step { grid-template-columns: 1fr; text-align: center; }
+            .step-num { margin: 0 auto; }
+            .compare-table { font-size: 0.85rem; }
+            .compare-table th, .compare-table td { padding: 0.6rem; }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <h1>台灣帶狀皰疹（皮蛇）疫苗指南</h1>
+        <p>完整說明疫苗種類、保護力、自費價格、接種流程與各縣市補助資訊</p>
+    </header>
+
+    <div class="container">
+
+        <!-- 簡介 -->
+        <section class="intro">
+            <h2>什麼是帶狀皰疹（皮蛇）？</h2>
+            <p>
+                帶狀皰疹（俗稱皮蛇）是由水痘－帶狀皰疹病毒（VZV）再活化所引起。
+                約三分之一的成年人一生中會得一次皮蛇，疼痛劇烈，部分患者會留下後遺神經痛，影響生活品質。
+                接種疫苗是目前最有效的預防方式。
+            </p>
+        </section>
+
+        <!-- 疫苗比較 -->
+        <section class="section">
+            <h2>兩種疫苗比較</h2>
+            <p>台灣目前有兩種核准的帶狀皰疹疫苗，建議優先選擇保護力較高的重組疫苗。</p>
+
+            <table class="compare-table">
+                <thead>
+                    <tr>
+                        <th>項目</th>
+                        <th>欣剋疹 / 欣安立適<br>(Shingrix)</th>
+                        <th>伏帶疹 / 感維<br>(Zostavax)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>疫苗類型</td>
+                        <td>非活性重組亞單位疫苗</td>
+                        <td>活性減毒疫苗</td>
+                    </tr>
+                    <tr>
+                        <td>接種劑次</td>
+                        <td>2 劑（肌肉注射）</td>
+                        <td>1 劑（皮下注射）</td>
+                    </tr>
+                    <tr>
+                        <td>劑次間隔</td>
+                        <td>2～6 個月<br>（免疫低下者可縮短至 1～2 個月）</td>
+                        <td>—</td>
+                    </tr>
+                    <tr>
+                        <td>保護效力</td>
+                        <td>50 歲以上約 97%<br>70 歲以上約 91%</td>
+                        <td>約 51%（隨年齡下降）</td>
+                    </tr>
+                    <tr>
+                        <td>保護持久性</td>
+                        <td>至少 7～10 年仍維持高保護力</td>
+                        <td>約 5 年後明顯下降</td>
+                    </tr>
+                    <tr>
+                        <td>適用對象</td>
+                        <td>50 歲以上成人<br>18 歲以上高風險族群</td>
+                        <td>50～79 歲健康成人</td>
+                    </tr>
+                    <tr>
+                        <td>免疫低下者</td>
+                        <td>可接種</td>
+                        <td>不建議接種</td>
+                    </tr>
+                    <tr>
+                        <td>自費參考價格</td>
+                        <td>每劑約 8,000～9,500 元<br>兩劑總計約 16,000～19,000 元</td>
+                        <td>約 4,500～6,800 元</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="highlight">
+                <strong>疾管署建議：</strong>50 歲以上未曾接種過帶狀皰疹疫苗者，優先選擇 Shingrix（欣剋疹）。已接種過 Zostavax 者，仍可接種 Shingrix（需間隔至少 2 個月）。
+            </div>
+        </section>
+
+        <!-- 接種流程 -->
+        <section class="section">
+            <h2>自費接種流程</h2>
+            <div class="steps">
+                <div class="step">
+                    <div class="step-num">1</div>
+                    <div class="step-body">
+                        <h4>諮詢與評估</h4>
+                        <p>至醫療院所（感染科、家醫科、內科等）諮詢醫師，確認是否適合接種，並了解自身縣市補助資格。</p>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-num">2</div>
+                    <div class="step-body">
+                        <h4>預約與登記</h4>
+                        <p>確認疫苗庫存後預約接種時間。部分縣市需先至衛生所登記或領取通知單。</p>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-num">3</div>
+                    <div class="step-body">
+                        <h4>接種當日準備</h4>
+                        <p>攜帶身分證、健保卡，以及符合補助資格的證明文件（低收入戶證明、重大傷病卡等）。</p>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-num">4</div>
+                    <div class="step-body">
+                        <h4>接種第一劑</h4>
+                        <p>醫師評估後施打，接種後需在現場觀察 15～30 分鐘。常見副作用為注射部位疼痛、疲倦、肌肉痠痛，多數數天內改善。</p>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-num">5</div>
+                    <div class="step-body">
+                        <h4>接種第二劑（Shingrix）</h4>
+                        <p>間隔 2～6 個月後接種第二劑，完成完整療程才能獲得最佳保護力。</p>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-num">6</div>
+                    <div class="step-body">
+                        <h4>完成與紀錄</h4>
+                        <p>保留接種紀錄，必要時申請補助核銷（依各縣市規定）。</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 補助資訊 -->
+        <section class="section">
+            <h2>各縣市補助重點（2025～2026）</h2>
+            <p>目前全台約 13 個縣市提供部分補助或免費接種，資格與金額會隨政策調整，接種前請務必向當地衛生所確認最新資訊。</p>
+
+            <h3>常見補助對象</h3>
+            <ul>
+                <li>設籍該縣市一定年限</li>
+                <li>65 歲以上長者（部分縣市原住民 55 歲以上）</li>
+                <li>低收入戶 / 中低收入戶</li>
+                <li>重大傷病、免疫功能低下、特定慢性病患者</li>
+            </ul>
+
+            <div class="highlight">
+                <strong>提醒：</strong>補助多以 Shingrix 為主，部分縣市提供全額免費，部分則為部分補助。請攜帶身分證、健保卡及相關證明文件至衛生所或指定院所辦理。
+            </div>
+        </section>
+
+        <!-- 圖片區 -->
+        <section class="section">
+            <h2>接種相關圖片與說明</h2>
+            <p>以下為 ZosterVaccinePayPicture 資料夾中的所有圖片（請將圖片放置於相對路徑後即可顯示）。</p>
+
+            <div class="gallery" id="imageGallery">
+                <!-- ZosterVaccinePay.png -->
+                <div class="gallery-item">
+                    <img src="SelfPay/ZosterVaccine/ZosterVaccinePayPicture/ZosterVaccinePay.png" 
+                         alt="ZosterVaccinePay" 
+                         onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                    <div class="image-placeholder" style="display:none;"><span>📷</span>ZosterVaccinePay.png</div>
+                    <div class="caption">ZosterVaccinePay.png</div>
+                </div>
+
+                <!-- Picture 1 to 13 -->
+                <div class="gallery-item">
+                    <img src="SelfPay/ZosterVaccine/ZosterVaccinePayPicture/ZosterVaccinePayPicture1.jpeg" 
+                         alt="ZosterVaccinePayPicture1" 
+                         onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                    <div class="image-placeholder" style="display:none;"><span>📷</span>Picture1.jpeg</div>
+                    <div class="caption">ZosterVaccinePayPicture1.jpeg</div>
+                </div>
+
+                <div class="gallery-item">
+                    <img src="SelfPay/ZosterVaccine/ZosterVaccinePayPicture/ZosterVaccinePayPicture2.jpeg" 
+                         alt="ZosterVaccinePayPicture2" 
+                         onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                    <div class="image-placeholder" style="display:none;"><span>📷</span>Picture2.jpeg</div>
+                    <div class="caption">ZosterVaccinePayPicture2.jpeg</div>
+                </div>
+
+                <div class="gallery-item">
+                    <img src="SelfPay/ZosterVaccine/ZosterVaccinePayPicture/ZosterVaccinePayPicture3.jpeg" 
+                         alt="ZosterVaccinePayPicture3" 
+                         onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                    <div class="image-placeholder" style="display:none;"><span>📷</span>Picture3.jpeg</div>
+                    <div class="caption">ZosterVaccinePayPicture3.jpeg</div>
+                </div>
+
+                <div class="gallery-item">
+                    <img src="SelfPay/ZosterVaccine/ZosterVaccinePayPicture/ZosterVaccinePayPicture4.jpeg" 
+                         alt="ZosterVaccinePayPicture4" 
+                         onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                    <div class="image-placeholder" style="display:none;"><span>📷</span>Picture4.jpeg</div>
+                    <div class="caption">ZosterVaccinePayPicture4.jpeg</div>
+                </div>
+
+                <div class="gallery-item">
+                    <img src="SelfPay/ZosterVaccine/ZosterVaccinePayPicture/ZosterVaccinePayPicture5.jpeg" 
+                         alt="ZosterVaccinePayPicture5" 
+                         onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                    <div class="image-placeholder" style="display:none;"><span>📷</span>Picture5.jpeg</div>
+                    <div class="caption">ZosterVaccinePayPicture5.jpeg</div>
+                </div>
+
+                <div class="gallery-item">
+                    <img src="SelfPay/ZosterVaccine/ZosterVaccinePayPicture/ZosterVaccinePayPicture6.jpeg" 
+                         alt="ZosterVaccinePayPicture6" 
+                         onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                    <div class="image-placeholder" style="display:none;"><span>📷</span>Picture6.jpeg</div>
+                    <div class="caption">ZosterVaccinePayPicture6.jpeg</div>
+                </div>
+
+                <div class="gallery-item">
+                    <img src="SelfPay/ZosterVaccine/ZosterVaccinePayPicture/ZosterVaccinePayPicture7.jpeg" 
+                         alt="ZosterVaccinePayPicture7" 
+                         onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                    <div class="image-placeholder" style="display:none;"><span>📷</span>Picture7.jpeg</div>
+                    <div class="caption">ZosterVaccinePayPicture7.jpeg</div>
+                </div>
+
+                <div class="gallery-item">
+                    <img src="SelfPay/ZosterVaccine/ZosterVaccinePayPicture/ZosterVaccinePayPicture8.jpeg" 
+                         alt="ZosterVaccinePayPicture8" 
+                         onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                    <div class="image-placeholder" style="display:none;"><span>📷</span>Picture8.jpeg</div>
+                    <div class="caption">ZosterVaccinePayPicture8.jpeg</div>
+                </div>
+
+                <div class="gallery-item">
+                    <img src="SelfPay/ZosterVaccine/ZosterVaccinePayPicture/ZosterVaccinePayPicture9.jpeg" 
+                         alt="ZosterVaccinePayPicture9" 
+                         onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                    <div class="image-placeholder" style="display:none;"><span>📷</span>Picture9.jpeg</div>
+                    <div class="caption">ZosterVaccinePayPicture9.jpeg</div>
+                </div>
+
+                <div class="gallery-item">
+                    <img src="SelfPay/ZosterVaccine/ZosterVaccinePayPicture/ZosterVaccinePayPicture10.jpeg" 
+                         alt="ZosterVaccinePayPicture10" 
+                         onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                    <div class="image-placeholder" style="display:none;"><span>📷</span>Picture10.jpeg</div>
+                    <div class="caption">ZosterVaccinePayPicture10.jpeg</div>
+                </div>
+
+                <div class="gallery-item">
+                    <img src="SelfPay/ZosterVaccine/ZosterVaccinePayPicture/ZosterVaccinePayPicture11.jpeg" 
+                         alt="ZosterVaccinePayPicture11" 
+                         onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                    <div class="image-placeholder" style="display:none;"><span>📷</span>Picture11.jpeg</div>
+                    <div class="caption">ZosterVaccinePayPicture11.jpeg</div>
+                </div>
+
+                <div class="gallery-item">
+                    <img src="SelfPay/ZosterVaccine/ZosterVaccinePayPicture/ZosterVaccinePayPicture12.jpeg" 
+                         alt="ZosterVaccinePayPicture12" 
+                         onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                    <div class="image-placeholder" style="display:none;"><span>📷</span>Picture12.jpeg</div>
+                    <div class="caption">ZosterVaccinePayPicture12.jpeg</div>
+                </div>
+
+                <div class="gallery-item">
+                    <img src="SelfPay/ZosterVaccine/ZosterVaccinePayPicture/ZosterVaccinePayPicture13.jpeg" 
+                         alt="ZosterVaccinePayPicture13" 
+                         onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                    <div class="image-placeholder" style="display:none;"><span>📷</span>Picture13.jpeg</div>
+                    <div class="caption">ZosterVaccinePayPicture13.jpeg</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 總結 -->
+        <section class="summary">
+            <h2>重點提醒</h2>
+            <p>
+                帶狀皰疹疫苗能有效降低發病與後遺神經痛風險。建議 50 歲以上民眾優先評估接種 Shingrix，
+                並主動查詢戶籍地衛生局最新補助資格，把握免費或補助機會。
+            </p>
+            <a href="#" class="btn">查詢各縣市衛生局聯絡方式</a>
+        </section>
+    </div>
+
+    <footer>
+        台灣帶狀皰疹疫苗指南 &bull; 資料參考疾管署與各縣市衛生局公告（政策可能變動，請以官方最新資訊為準）
+    </footer>
+
+    <script>
+        document.querySelectorAll('.gallery-item img').forEach(img => {
+            img.addEventListener('error', function() {
+                this.style.display = 'none';
+                if (this.nextElementSibling && this.nextElementSibling.classList.contains('image-placeholder')) {
+                    this.nextElementSibling.style.display = 'flex';
+                }
+            });
+            if (!img.complete || img.naturalHeight === 0) {
+                img.dispatchEvent(new Event('error'));
+            }
+        });
+    </script>
+</body>
+</html>
