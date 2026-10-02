@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>自費流程</title>
+    <style>
+        :root {
+            --primary: #0f766e;
+            --primary-dark: #0d5c56;
+            --primary-light: #14b8a6;
+            --accent: #f59e0b;
+            --bg: #f8fafc;
+            --card: #ffffff;
+            --text: #1e293b;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+            --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "Microsoft JhengHei", "PingFang TC", "Noto Sans TC", "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.7;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            padding: 3rem 1.5rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.08) 0%, transparent 60%);
+            animation: pulse 15s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 0.5; }
+            50% { transform: scale(1.1); opacity: 0.8; }
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            position: relative;
+        }
+
+        .header p {
+            font-size: 1.15rem;
+            opacity: 0.9;
+            max-width: 620px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        /* Container */
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 2.5rem 1.5rem 4rem;
+        }
+
+        /* Intro */
+        .intro {
+            background: var(--card);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 2.5rem;
+            box-shadow: var(--shadow);
+            border-left: 5px solid var(--primary);
+        }
+
+        .intro h2 {
+            color: var(--primary);
+            margin-bottom: 0.75rem;
+            font-size: 1.4rem;
+        }
+
+        .intro p {
+            color: var(--text-muted);
+        }
+
+        /* Process Steps */
+        .steps {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .step {
+            display: grid;
+            grid-template-columns: 80px 1fr;
+            gap: 1.5rem;
+            background: var(--card);
+            border-radius: 16px;
+            padding: 1.75rem;
+            box-shadow: var(--shadow);
+            transition: transform 0.25s ease, box-shadow 0.25s ease;
+            position: relative;
+        }
+
+        .step:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .step-number {
+            width: 64px;
+            height: 64px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: 700;
+            flex-shrink: 0;
+            box-shadow: 0 4px 12px rgba(15, 118, 110, 0.3);
+        }
+
+        .step-content h3 {
+            font-size: 1.25rem;
+            margin-bottom: 0.5rem;
+            color: var(--text);
+        }
+
+        .step-content p {
+            color: var(--text-muted);
+            margin-bottom: 1rem;
+        }
+
+        .step-content ul {
+            list-style: none;
+            margin-bottom: 1.25rem;
+        }
+
+        .step-content ul li {
+            position: relative;
+            padding-left: 1.4rem;
+            margin-bottom: 0.4rem;
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        .step-content ul li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: var(--primary);
+            font-weight: bold;
+        }
+
+        /* Image container */
+        .step-images {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .step-images img {
+            max-width: 100%;
+            height: auto;
+            max-height: 220px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            object-fit: contain;
+            background: #f1f5f9;
+        }
+
+        .image-placeholder {
+            width: 180px;
+            height: 120px;
+            background: linear-gradient(135deg, #e2e8f0 0%, #f1f5f9 100%);
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            border: 2px dashed #cbd5e1;
+        }
+
+        .image-placeholder span {
+            font-size: 1.8rem;
+            margin-bottom: 0.3rem;
+        }
+
+        /* Timeline connector */
+        .step:not(:last-child)::after {
+            content: '';
+            position: absolute;
+            left: 47px;
+            top: 100px;
+            width: 3px;
+            height: calc(100% - 40px);
+            background: linear-gradient(to bottom, var(--primary-light), transparent);
+            z-index: 0;
+        }
+
+        /* Summary box */
+        .summary {
+            margin-top: 3rem;
+            background: linear-gradient(135deg, #ecfdf5 0%, #f0fdfa 100%);
+            border: 1px solid #a7f3d0;
+            border-radius: 16px;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .summary h2 {
+            color: var(--primary-dark);
+            margin-bottom: 0.75rem;
+        }
+
+        .summary p {
+            color: var(--text-muted);
+            max-width: 700px;
+            margin: 0 auto 1.5rem;
+        }
+
+        .btn {
+            display: inline-block;
+            background: var(--primary);
+            color: white;
+            padding: 0.85rem 2rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: background 0.2s, transform 0.2s;
+            box-shadow: 0 4px 12px rgba(15, 118, 110, 0.25);
+        }
+
+        .btn:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            border-top: 1px solid var(--border);
+            margin-top: 2rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 640px) {
+            .header h1 {
+                font-size: 1.8rem;
+            }
+            .step {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+            .step-number {
+                margin: 0 auto;
+            }
+            .step:not(:last-child)::after {
+                display: none;
+            }
+            .step-content ul li {
+                text-align: left;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <h1>自費流程</h1>
+        <p>專為未投保或選擇自費的病患設計，從掛號到完成繳費的透明化完整指南</p>
+    </header>
+
+    <div class="container">
+        <section class="intro">
+            <h2>什麼是自費流程？</h2>
+            <p>
+                當病患沒有保險（或選擇不使用保險）時，醫療機構會啟動一套專用作業流程，
+                重點在於費用透明、準確預估以及即時收款。此流程同時保障病患與機構權益，
+                並符合相關法規（如善意費用預估）的要求。
+            </p>
+        </section>
+
+        <div class="steps">
+            <!-- Step 1 -->
+            <div class="step">
+                <div class="step-number">1</div>
+                <div class="step-content">
+                    <h3>病患掛號與資料建檔</h3>
+                    <p>完整收集病患基本資料與聯絡資訊，並確認其為自費身份。</p>
+                    <ul>
+                        <li>核對身分證件與聯絡方式</li>
+                        <li>記錄自費身份並簽署財務責任同意書</li>
+                        <li>取得各項同意書簽名</li>
+                    </ul>
+                    <div class="step-images">
+                        <img src="selfpay/selfpayprocesspicture/step1.png" alt="步驟1 - 病患掛號" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                        <div class="image-placeholder" style="display:none;"><span>📷</span>step1.png</div>
+                        <img src="selfpay/selfpayprocesspicture/01.png" alt="步驟1" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                        <div class="image-placeholder" style="display:none;"><span>📷</span>01.png</div>
+                        <img src="selfpay/selfpayprocesspicture/registration.jpg" alt="掛號" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                        <div class="image-placeholder" style="display:none;"><span>📷</span>registration.jpg</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 2 -->
+            <div class="step">
+                <div class="step-number">2</div>
+                <div class="step-content">
+                    <h3>費用預估與善意費用預估</h3>
+                    <p>在提供服務前，先以書面提供預估費用（自費病患依法應收到善意費用預估）。</p>
+                    <ul>
+                        <li>列出所有預期服務項目、代碼與金額</li>
+                        <li>依規定時限內交付善意費用預估</li>
+                        <li>請病患簽署預估費用確認書</li>
+                    </ul>
+                    <div class="step-images">
+                        <img src="selfpay/selfpayprocesspicture/step2.png" alt="步驟2 - 費用預估" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                        <div class="image-placeholder" style="display:none;"><span>📷</span>step2.png</div>
+                        <img src="selfpay/selfpayprocesspicture/02.png" alt="步驟2" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                        <div class="image-placeholder" style="display:none;"><span>📷</span>02.png</div>
+                        <img src="selfpay/selfpayprocesspicture/estimate.jpg" alt="費用預估" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                        <div class="image-placeholder" style="display:none;"><span>📷</span>estimate.jpg</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 3 -->
+            <div class="step">
+                <div class="step-number">3</div>
+                <div class="step-content">
+                    <h3>財務諮詢與折扣說明</h3>
+                    <p>向病患說明自費折扣、付款方式，以及是否符合任何財務協助方案。</p>
+                    <ul>
+                        <li>套用機構公告的自費／現金折扣政策</li>
+                        <li>說明即時付款或全額付款優惠</li>
+                        <li>以書面記錄雙方同意的金額</li>
+                    </ul>
+                    <div class="step-images">
+                        <img src="selfpay/selfpayprocesspicture/step3.png" alt="步驟3 - 財務諮詢" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                        <div class="image-placeholder" style="display:none;"><span>📷</span>step3.png</div>
+                        <img src="selfpay/selfpayprocesspicture/03.png" alt="步驟3" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                        <div class="image-placeholder" style="display:none;"><span>📷</span>03.png</div>
+                        <img src="selfpay/selfpayprocesspicture/counseling.jpg" alt="財務諮詢" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                        <div class="image-placeholder" style="display:none;"><span>📷</span>counseling.jpg</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 4 -->
+            <div class="step">
+                <div class="step-number">4</div>
+                <div class="step-content">
+                    <h3>事前收款或訂金</h3>
+                    <p>於服務前或服務當日收取全額或部分訂金，以降低後續催收風險。</p>
+                    <ul>
+                        <li>收取全額或一定比例訂金</li>
+                        <li>必要時取得信用卡授權（依規定辦理）</li>
+                        <li>開立收據並更新帳務狀態</li>
+                    </ul>
+                    <div class="step-images">
+                        <img src="selfpay/selfpayprocesspicture/step4.png" alt="步驟4 - 收款" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                        <div class="image-placeholder" style="display:none;"><span>📷</span>step4.png</div>
+                        <img src="selfpay/selfpayprocesspicture/04.png" alt="步驟4" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                        <div class="image-placeholder" style="display:none;"><span>📷</span>04.png</div>
+                        <img src="selfpay/selfpayprocesspicture/payment.jpg" alt="付款" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                        <div class="image-placeholder" style="display:none;"><span>📷</span>payment.jpg</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 5 -->
+            <div class="step">
+                <div class="step-number">5</div>
+                <div class="step-content">
+                    <h3>服務執行與費用登錄</h3>
+                    <p>提供醫療服務，並正確記錄每一項實際執行的處置、耗材與程序。</p>
+                    <ul>
+                        <li>登錄實際使用的診療代碼與數量</li>
+                        <li>比對實際服務與原先預估內容</li>
+                        <li>若有額外費用，即時通知病患</li>
+                    </ul>
+                    <div class="step-images">
+                        <img src="selfpay/selfpayprocesspicture/step5.png" alt="步驟5 - 服務執行" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                        <div class="image-placeholder" style="display:none;"><span>📷</span>step5.png</div>
+                        <img src="selfpay/selfpayprocesspicture/05.png" alt="步驟5" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                        <div class="image-placeholder" style="display:none;"><span>📷</span>05.png</div>
+                        <img src="selfpay/selfpayprocesspicture/service.jpg" alt="服務" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                        <div class="image-placeholder" style="display:none;"><span>📷</span>service.jpg</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 6 -->
+            <div class="step">
+                <div class="step-number">6</div>
+                <div class="step-content">
+                    <h3>最終帳單與明細</h3>
+                    <p>產出明細帳單，清楚顯示原始預估、實際費用、已套用折扣與剩餘應繳金額。</p>
+                    <ul>
+                        <li>提供含代碼與說明的明細帳單</li>
+                        <li>清楚標示自費折扣金額</li>
+                        <li>註明繳費期限與接受的付款方式</li>
+                    </ul>
+                    <div class="step-images">
+                        <img src="selfpay/selfpayprocesspicture/step6.png" alt="步驟6 - 最終帳單" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                        <div class="image-placeholder" style="display:none;"><span>📷</span>step6.png</div>
+                        <img src="selfpay/selfpayprocesspicture/06.png" alt="步驟6" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                        <div class="image-placeholder" style="display:none;"><span>📷</span>06.png</div>
+                        <img src="selfpay/selfpayprocesspicture/billing.jpg" alt="帳單" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                        <div class="image-placeholder" style="display:none;"><span>📷</span>billing.jpg</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 7 -->
+            <div class="step">
+                <div class="step-number">7</div>
+                <div class="step-content">
+                    <h3>收款結清與帳戶結案</h3>
+                    <p>收取剩餘款項、入帳，並在全額結清後關閉帳戶。</p>
+                    <ul>
+                        <li>接受多元付款方式（刷卡、轉帳、現金、線上支付等）</li>
+                        <li>必要時提供分期付款方案</li>
+                        <li>開立結清證明或最終收據</li>
+                    </ul>
+                    <div class="step-images">
+                        <img src="selfpay/selfpayprocesspicture/step7.png" alt="步驟7 - 收款結清" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                        <div class="image-placeholder" style="display:none;"><span>📷</span>step7.png</div>
+                        <img src="selfpay/selfpayprocesspicture/07.png" alt="步驟7" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                        <div class="image-placeholder" style="display:none;"><span>📷</span>07.png</div>
+                        <img src="selfpay/selfpayprocesspicture/collection.jpg" alt="結清" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                        <div class="image-placeholder" style="display:none;"><span>📷</span>collection.jpg</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <section class="summary">
+            <h2>重點提醒</h2>
+            <p>
+                良好的自費流程以「透明」、「書面預估」、「明確折扣」與「即時收款」為核心。
+                遵循以上步驟可減少突如其來的帳單爭議、提升現金流，並建立病患信任。
+            </p>
+            <a href="#" class="btn">下載自費政策範本</a>
+        </section>
+    </div>
+
+    <footer>
+        自費流程指南 &bull; 供教育與實務作業參考使用
+    </footer>
+
+    <script>
+        // Auto-hide empty image placeholders that never loaded
+        document.querySelectorAll('.step-images img').forEach(img => {
+            img.addEventListener('error', function() {
+                this.style.display = 'none';
+                if (this.nextElementSibling && this.nextElementSibling.classList.contains('image-placeholder')) {
+                    this.nextElementSibling.style.display = 'flex';
+                }
+            });
+            // Force check in case image already failed
+            if (!img.complete || img.naturalHeight === 0) {
+                img.dispatchEvent(new Event('error'));
+            }
+        });
+    </script>
+</body>
+</html>
